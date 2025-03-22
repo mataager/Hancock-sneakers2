@@ -1,0 +1,1651 @@
+<head>
+    <meta charset="UTF-8">
+    <style data-styles="">
+        ion-icon {
+            visibility: hidden
+        }
+
+        .hydrated {
+            visibility: inherit
+        }
+    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="store-title"></title>
+    <link rel="shortcut icon" href="./favicon.png" type="image/svg+xml">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="./assets/js/static.js"></script>
+    <script src="./assets/js/search-product.js"></script>
+    <script src="./assets/js/image-error.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+</head>
+
+
+<header class="header" data-header="">
+    <div class="header__bar">Free Shipping On Orders Over <div class="m-x-3" id="free-shipping"></div> EGP</div>
+    <div class="container">
+
+        <div class="overlay" data-overlay=""></div>
+
+        <a href="./index.html" class="logo">
+            <img src="./assets/images/iicon.svg" width="160" height="50" alt="">
+        </a>
+
+        <button class="nav-open-btn" data-nav-open-btn="" aria-label="Open Menu">
+            <ion-icon name="menu-outline" role="img" class="md hydrated" aria-label="menu outline"></ion-icon>
+        </button>
+
+        <nav class="navbar" data-navbar="">
+
+            <button class="nav-close-btn black-font" data-nav-close-btn="" aria-label="Close Menu">
+                <ion-icon name="close-outline" role="img" class="md hydrated" aria-label="close outline"></ion-icon>
+            </button>
+
+            <a href="#" class="logo bg-white">
+                <img src="./assets/images/iicon.svg" width="190" height="50" alt="">
+            </a>
+
+            <ul class="navbar-list">
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('index.html')">Home</a>
+                </li>
+                <!-- <li class="navbar-item">
+                                        <a href="#" class="navbar-link" onclick="changeFrameSrc('About.html')">About</a>
+                                    </li> -->
+                <li class="navbar-item hidden" id="megamenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Products</a>
+                        <!-- <a id="open-category" class="rotate open-category open-category-btn"><i
+                                                    class="bi bi-plus"></i></a> -->
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+
+                    </div>
+                </li>
+                <li class="navbar-item" id="brandsmenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Brands</a>
+                        <a id="open-brands" class="rotate open-category open-category-btn">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+                        <!-- Brand Categories -->
+                        <div class="flex col-u-991">
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/nike-11.svg">
+                                        <a href="#" onclick="brand('Nike')">Nike</a>
+                                    </li>
+                                    <li><img width="20px" src="https://www.svgrepo.com/show/329847/adidas.svg"><a
+                                            href="#" onclick="brand('Adidas')">Adidas</a></li>
+                                    <li><img width="20px"
+                                            src="https://images.seeklogo.com/logo-png/51/1/on-running-logo-png_seeklogo-510256.png"><a
+                                            href="#" onclick="brand('On Cloud')">On Cloud</a></li>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303470/puma-logo-logo.svg"><a href="#"
+                                            onclick="brand('Puma')">Puma</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303555/jordan-air-logo.svg"><a href="#"
+                                            onclick="brand('Jordan')">Jordan</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/asics-6.svg"><a
+                                            href="#" onclick="brand('ASICS')">Asics</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.freelogovectors.net/wp-content/uploads/2023/03/golden-goose-logo-freelogovectors.net_.png"><a
+                                            href="#" onclick="brand('Golden Goose')">Golden Goose</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/new-balance-2.svg"><a href="#"
+                                            onclick="brand('New Balance')">New Balance</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/onitsuka-tiger-1.svg"><a href="#"
+                                            onclick="brand('Onitsuka Tiger')">Onitsuka Tiger</a></li>
+                                    <li><img width="20px"
+                                            src="https://1000marche.net/wp-content/uploads/2021/09/McQ-Alexander-McQueen-Logo.png"><a
+                                            href="#" onclick="brand('McQueen')">McQueen</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/ugg-australia.svg"><a href="#"
+                                            onclick="brand('UGG')">UGG</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/vans-3.svg"><a
+                                            href="#" onclick="brand('Vans')">Vans</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item that contains the mega menu
+                        const navbarItem = document.getElementById('megamenu');
+                        const toggleIcon = document.getElementById('open-category');
+                        const categoryHeaders = document.querySelectorAll('.menu-category h4');
+
+                        // Toggle mega menu display on click for smaller screens
+                        toggleIcon.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleIcon.classList.add('rotate-360');
+                                toggleIcon.classList.remove('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Add click event listeners to all category headers (h4)
+                        categoryHeaders.forEach(header => {
+                            header.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent click from closing the navbar
+                                const category = header.parentElement;
+                                category.classList.toggle('active');
+                            });
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item and the toggle button
+                        const navbarItem = document.getElementById('brandsmenu');
+                        const toggleButton = document.getElementById('open-brands');
+
+                        // Toggle mega menu display on button click
+                        toggleButton.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleButton.classList.add('rotate-360');
+                                toggleButton.classList.remove('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+                </script>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link red-txt" onclick="changeFrameSrc('sale.html')">Sale</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('Contact.html')">Contact</a>
+                </li>
+            </ul>
+            <ul class="nav-action-list">
+
+                <li class="li-action" id="search-li">
+
+
+                </li>
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('Cart.html')">
+                        <ion-icon name="bag-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+                        <data class="nav-action-text">Basket: <strong class="cart-amount" id="cart-amount">0
+                                E£</strong></data>
+                        <data id="cartItemCount" class="nav-action-badge" aria-hidden="true">0</data>
+                    </button>
+                </li>
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('account.html')">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <span class="nav-action-text">Account</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-action-btn hidden">
+                        <ion-icon name="heart-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+
+                        <span class="nav-action-text">Wishlist</span>
+
+                        <data class="nav-action-badge" value="5" aria-hidden="true">5</data>
+                    </button>
+                </li>
+            </ul>
+
+        </nav>
+
+    </div>
+</header>
+<main>
+    <div class="preloader" id="preloader">
+        <img src="favicon.png" alt="Your Image" width="40" height="40">
+        <div class="loader"></div>
+    </div>
+
+    <div class="product-area" id="product-area">
+
+        <section class="section product">
+
+            <div class="flex center" id="productDetailsSection">
+                <div class="flex center width-90">
+                    <div class="flex">
+                        <div id="product-div" class="flex center">
+
+
+                            <div class="content-photo-container">
+                                <button id="previous-button" class="previous-button none-op">
+                                    <i class="bi bi-arrow-left-short arrow"></i>
+                                </button>
+
+                                <img id="productImage" class="product-image active" src="" alt="Product Image">
+                                <img id="productImage2" class="product-image" src="" alt="Product Image">
+                                <img id="productImage3" class="product-image" src="" alt="Product Image">
+                                <img id="productImage4" class="product-image" src="" alt="Product Image">
+                                <img id="productImage5" class="product-image" src="" alt="Product Image">
+                                <img id="productImage6" class="product-image" src="" alt="Product Image">
+
+                                <button id="next-button" class="next-button none-op">
+                                    <i class="bi bi-arrow-right-short arrow"></i>
+                                </button>
+                            </div>
+
+
+                            <script>
+                                // const images = document.querySelectorAll('.product-image');
+                                // let currentIndex = 0;
+
+                                // function showImage(index) {
+                                //     images[currentIndex].classList.remove('active');
+                                //     images[index].classList.add('active');
+                                //     currentIndex = index;
+                                // }
+
+                                // document.getElementById('previous-button').addEventListener('click', () => {
+                                //     const previousIndex = (currentIndex - 1 + images.length) % images.length;
+                                //     showImage(previousIndex);
+                                // });
+
+                                // document.getElementById('next-button').addEventListener('click', () => {
+                                //     const nextIndex = (currentIndex + 1) % images.length;
+                                //     showImage(nextIndex);
+                                // });
+
+                                // // Show the first image initially
+                                // showImage(0);
+                                const images = document.querySelectorAll('.product-image');
+                                const previousButton = document.getElementById('previous-button');
+                                const nextButton = document.getElementById('next-button');
+
+                                function getCurrentImage() {
+                                    return document.querySelector('.product-image.active');
+                                }
+
+                                function showImage(image) {
+                                    const currentImage = getCurrentImage();
+                                    if (currentImage) currentImage.classList.remove('active');
+                                    image.classList.add('active');
+                                }
+
+                                nextButton.addEventListener('click', () => {
+                                    let currentImage = getCurrentImage();
+                                    let nextImage = currentImage.nextElementSibling;
+
+                                    while (nextImage && !nextImage.classList.contains('product-image')) {
+                                        nextImage = nextImage.nextElementSibling;
+                                    }
+
+                                    if (!nextImage) {
+                                        nextImage = images[0]; // Loop back to the first image
+                                    }
+
+                                    showImage(nextImage);
+                                });
+
+                                previousButton.addEventListener('click', () => {
+                                    let currentImage = getCurrentImage();
+                                    let prevImage = currentImage.previousElementSibling;
+
+                                    while (prevImage && !prevImage.classList.contains('product-image')) {
+                                        prevImage = prevImage.previousElementSibling;
+                                    }
+
+                                    if (!prevImage) {
+                                        prevImage = images[images.length - 1]; // Loop back to the last image
+                                    }
+
+                                    showImage(prevImage);
+                                });
+
+                                // Show the first image initially
+                                showImage(images[0]);
+
+                            </script>
+
+                            <div class="details-info p-20">
+                                <h5 id="BrandName" class="mb-10 m-5 pl-0 ml-10"></h5>
+                                <h2 id="productTitle" class="m-5 ml-auto mb-10 ml-10"></h2>
+                                <h5 id="hints" class="m-5 ml-auto mb-10 ml-10 hints"></h5>
+                                <p id="preprice" class="m-5 mb-10"></p>
+                                <p id="productPrice" class="m-5 mb-10"></p>
+
+                                <div class="size m-5 mb-10">
+                                    <label class="m-5 flex pb-7" for="product-Size">
+                                        Size:<p id="product-Size"> </p>
+                                    </label>
+                                    <div class="rolling-container rolling-animation" id="size-hint-text">
+
+                                    </div>
+
+                                    <div role="radiogroup" class="radio-group size-tabs mb-10">
+                                    </div>
+                                </div>
+
+                                <div class="color-selector m-5 mb-10">
+                                    <label class="m-5 flex align-items pb-7" for="product-color">Color:<p
+                                            id="product-color">
+                                        <div id="hint" class="hint-text"></div>
+                                        </p>
+                                    </label>
+                                    <div id="color-hint-text"
+                                        style="display: none; font-size: 16px; color: #333; margin-top: 10px;">
+                                    </div>
+
+
+
+                                    <div class="color-options m-5 flex-wrap width-80 mb-10">
+                                    </div>
+                                    <h5 id="stockContainer" class="mb-10 m-5 flex pl-0 hidden">
+                                        <p id="stockMessage"></p>
+                                    </h5>
+                                    <h5 class="mb-10 m-5 flex pl-0 pointer gap-5">SKU:<p class="productSKU"
+                                            id="productID" onclick="copyToClipboard()">
+                                        </p>
+                                    </h5>
+                                </div>
+
+                                <div class="m-5 mb-10 flex">
+                                    <button id="addToCartButton" class="Add-to-Cart">Add
+                                        To Cart
+                                        <i class="bi bi-bag-plus"></i>
+                                    </button>
+                                    <div id="addtofavouritediv" class="flex">
+
+                                    </div>
+                                </div>
+
+                                <div class="m-5 mb-10">
+                                    <button id="showdetails" class="Add-to-Cart">Show Details
+                                        <i class="bi bi-arrow-down-short"></i>
+                                    </button>
+                                </div>
+                                <div id="details-section" class="m-5 mb-10 hidden">
+                                    <div class="flex align-items mb-5">
+                                        <h5 class="m-5 flex">Category :</h5>
+                                        <p class="" id="category"></p>
+                                    </div>
+                                    <div class="flex align-items mb-5">
+                                        <h5 class="m-5 flex">piece :</h5>
+                                        <p class="" id="piece"></p>
+                                    </div>
+                                    <div class="mb-5">
+                                        <h5 class="m-5 flex mt-10">Details:</h5>
+                                        <p class="m-5 line-height-30" id="product-details"></p>
+                                    </div>
+
+                                </div>
+                                <div class="m-5 mb-10">
+                                    <button id="shareProductButton" class="Share-Product">
+                                        Copy Link <i class="bi bi-link-45deg"></i>
+                                    </button>
+                                    <div id="copyMessage" style="display: none; color: green; margin-top: 10px;">Link
+                                        copied!</div>
+                                </div>
+                                <div class="m-5 mb-10">
+                                    <div class="social-share-buttons">
+                                        <a id="shareFacebook" class="circle-button facebook hidden" href="#"
+                                            target="_blank" title="Share on Facebook">
+                                            <i class="bi bi-facebook"></i>
+                                        </a>
+                                        <a id="shareWhatsApp" class="circle-button whatsapp" href="#" target="_blank"
+                                            title="Share on WhatsApp">
+                                            <i class="bi bi-whatsapp"></i>
+                                        </a>
+                                        <a id="shareInstagram" class="circle-button instagram hidden" href="#"
+                                            title="Share on Instagram">
+                                            <i class="bi bi-instagram"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <!--cart validation-->
+
+
+                                <script>
+                                    function addToCart() {
+                                        const title = document.getElementById("productTitle").innerText;
+                                        const brandName = document.getElementById("BrandName").innerText;
+                                        const productPrice = document.getElementById("productPrice").innerText;
+                                        const productSize = document.getElementById("product-Size").innerText;
+                                        const productColor = document.getElementById("product-color").innerText;
+                                        const productID = document.getElementById("productID").innerText;
+
+                                        // Get the reference to the img element
+                                        const productImage = document.getElementById('productImage');
+                                        const srcValue = productImage.getAttribute('src');
+
+                                        const newItem = {
+                                            id: productID,
+                                            brand: brandName,
+                                            title: title,
+                                            productSize: productSize,
+                                            productColor: productColor,
+                                            price: productPrice,
+                                            photourl: srcValue,
+                                            quantity: 1 // Initialize quantity
+                                        };
+
+                                        // Retrieve cart from local storage or initialize it as an empty array
+                                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                                        // Check if an item with the same ID, size, and color already exists
+                                        const existingItem = cart.find(item =>
+                                            item.id === newItem.id &&
+                                            item.productSize === newItem.productSize &&
+                                            item.productColor === newItem.productColor
+                                        );
+
+                                        if (existingItem) {
+                                            // If the item exists, increase its quantity
+                                            existingItem.quantity += 1;
+                                        } else {
+                                            // If the item doesn't exist, add it as a new item
+                                            cart.push(newItem);
+                                        }
+
+                                        // Store the updated cart back to local storage
+                                        localStorage.setItem('cart', JSON.stringify(cart));
+
+                                        // Change button text and add a message using SweetAlert
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Added to Cart',
+                                            showConfirmButton: false,
+                                            timer: 1500 // Close the alert after 1.5 seconds
+                                        });
+
+                                        updateCartCount();
+                                    }
+                                </script>
+
+                                <cript src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+                                    </script>
+
+                                    <!-- Add other product details here as needed -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </section>
+
+        <section>
+            <div class="related-products-section" id="related-products-section">
+                <h2 class="flex align-items m-x-20 related-section-title">
+                    <span class="text">Related Products</span>
+                    <span class="related-line"></span>
+                </h2>
+
+                <div class="related-product-cards-container">
+                    <div class="related-products-container">
+
+                    </div>
+                </div>
+
+                <div class="dots-container">
+                    <!-- Dots will be dynamically generated here -->
+                </div>
+            </div>
+
+        </section>
+        <div id="modal-fav" class="modal">
+            <div id="modal-fav-content" class="fav-modal-content">
+
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    <footer class="footer hidden">
+        <div class="footer-top section">
+            <div class="container">
+
+                <div class="footer-brand">
+
+                    <a href="#" class="logo">
+                        <img src="./assets/images/iicon.svg" width="160" height="50" alt="">
+                    </a>
+
+                    <ul class="social-list hidden">
+
+                        <li>
+                            <a href="#" class="social-link">
+                                <ion-icon name="logo-facebook" role="img" class="md hydrated"
+                                    aria-label="logo facebook"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="social-link">
+                                <ion-icon name="logo-twitter" role="img" class="md hydrated"
+                                    aria-label="logo twitter"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="social-link">
+                                <ion-icon name="logo-pinterest" role="img" class="md hydrated"
+                                    aria-label="logo pinterest"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="social-link">
+                                <ion-icon name="logo-linkedin" role="img" class="md hydrated"
+                                    aria-label="logo linkedin"></ion-icon>
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <div class="footer-end flex space-around">
+
+                    <ul class="footer-list">
+
+                        <li>
+                            <p class="footer-list-title">Contact Us</p>
+                        </li>
+
+                        <li>
+                            <a href="tel:" id="store-call" class="footer-link">
+                                <ion-icon name="call" role="img" class="md hydrated" aria-label="call"></ion-icon>
+                                <span id="store-number" class="footer-link-text"></span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="mailto:" id="store-email-link" class="footer-link">
+                                <ion-icon name="mail" role="img" class="md hydrated" aria-label="mail"></ion-icon>
+                                <span id="store-email" class="footer-link-text"></span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="footer-link" id="report-bug-btn">
+                                <ion-icon name="bug"></ion-icon>
+                                <span class="footer-link-text">Report a problem or a bug</span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+
+
+                    <div class="footer-list">
+
+                        <p class="footer-list-title">Newsletter</p>
+
+                        <p class="newsletter-text">
+                            Send us your email to keeping up with our latest updates..
+                        </p>
+
+                        <form action="" class="newsletter-form">
+                            <input type="email" name="email" required="" placeholder="Email Address"
+                                class="newsletter-input">
+
+                            <button type="submit" class="btn2 btn-primary">Subscribe</button>
+                        </form>
+
+                    </div>
+                    <ul class="footer-list">
+                        <p class="footer-list-title">Matager</p>
+                        <li>
+                            <a href="https://matager.online/PrivacyPolicy.html" class="footer-link">
+                                <span class="footer-link-text">privacy policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://matager.online/Termsofservice.html" class="footer-link">
+                                <span class="footer-link-text">Terms of service</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="flex center">
+            <a href="https://matager.online" target="_blank">
+                <img src="./assets/images/powerd by matager black.svg" width="100px">
+            </a>
+        </div>
+    </footer>
+
+</main>
+<a href="#top" class="go-top-btn" data-go-top="">
+    <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
+</a>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the current page URL and encode it for sharing
+        const currentPageURL = encodeURIComponent(window.location.href);
+        const pageTitle = encodeURIComponent(document.title);
+
+        // Set up Facebook share link
+        document.getElementById('shareFacebook').addEventListener('click', function () {
+            const facebookURL = `https://www.facebook.com/dialog/share?app_id=61564248736614&href=${encodeURIComponent(currentPageURL)}&quote=${encodeURIComponent(pageTitle)}&display=popup`;
+            window.open(facebookURL, '_blank'); // Open the Facebook share dialog
+        });
+
+        // Set up WhatsApp share link
+        const whatsappShareURL = `https://wa.me/?text=${pageTitle}%20${currentPageURL}`;
+        document.getElementById('shareWhatsApp').href = whatsappShareURL;
+
+        // Instagram share handler (placeholder)
+        document.getElementById('shareInstagram').addEventListener('click', function () {
+            const instagramMessage = `${pageTitle} ${currentPageURL}`;
+            const instagramURL = `instagram://share?text=${encodeURIComponent(instagramMessage)}`;
+            window.open(instagramURL, '_blank');
+        });
+
+
+        // Copy URL to clipboard on "Share My Product" button click
+        document.getElementById('shareProductButton').addEventListener('click', function () {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    // Show confirmation message
+                    const messageDiv = document.getElementById('copyMessage');
+                    messageDiv.style.display = 'block';
+
+                    // Hide the confirmation message after 2 seconds
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy URL:', err);
+                });
+        });
+    });
+
+
+    // Function to check if elements are empty and toggle button state
+    function checkAndToggleButton(sizeId, colorId, buttonId) {
+        const sizeElement = document.getElementById(sizeId);
+        const colorElement = document.getElementById(colorId);
+        const buttonElement = document.getElementById(buttonId);
+        const carti = buttonElement.querySelector('i'); // Get the icon element
+
+        // Check if either size or color element is empty
+        if (!sizeElement.innerText.trim() || !colorElement.innerText.trim()) {
+            buttonElement.disabled = true; // Disable the button
+            buttonElement.style.opacity = '0.5'; // Set opacity to 0.5
+            carti.classList.remove('bi-bag-check');
+            carti.classList.add('bi-exclamation-lg');
+            buttonElement.removeAttribute('onclick'); // Remove onclick attribute if any
+        } else {
+            buttonElement.disabled = false; // Enable the button
+            buttonElement.style.opacity = '1'; // Set opacity to 1
+            carti.classList.remove('bi-exclamation-lg');
+            carti.classList.add('bi-bag-check');
+            buttonElement.setAttribute('onclick', 'addToCart()'); // Add onclick attribute
+        }
+    }
+
+    // Add event listeners for size and color selection
+    const sizeOptions = document.querySelectorAll(".size-radio");
+    const colorOptions = document.querySelectorAll(".color-option");
+
+    sizeOptions.forEach((option) => {
+        option.addEventListener("click", function () {
+            const sizeElement = document.getElementById("product-Size");
+
+            // Reset background for all sizes
+            sizeOptions.forEach(opt => opt.style.backgroundColor = "");
+
+            // Set background for the selected size
+            option.style.backgroundColor = "#333"; // Change to your desired color
+            sizeElement.innerText = option.querySelector(".size-value").innerText;
+
+            // Automatically select the first color for the chosen size
+            const firstColorOption = colorOptions[0];
+            if (firstColorOption) {
+                colorOptions.forEach(opt => opt.style.border = "1px solid transparent"); // Reset borders
+                firstColorOption.style.border = "2px solid #333"; // Highlight first color
+                const colorElement = document.getElementById("product-color");
+                colorElement.innerText = firstColorOption.getAttribute("data-color-name");
+            }
+
+            // Check and toggle button state
+            checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+        });
+    });
+
+    colorOptions.forEach((option) => {
+        option.addEventListener("click", function () {
+            const colorElement = document.getElementById("product-color");
+
+            // Reset border for all colors
+            colorOptions.forEach(opt => opt.style.border = "1px solid transparent");
+
+            // Set border for selected color
+            option.style.border = "2px solid #333";
+            colorElement.innerText = option.getAttribute("data-color-name");
+
+            // Check and toggle button state
+            checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+        });
+    });
+
+    // Initialize on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+
+        // Automatically select the first size and color
+        const firstSizeOption = sizeOptions[0];
+        const firstColorOption = colorOptions[0];
+
+        if (firstSizeOption) {
+            firstSizeOption.click(); // Simulate click on the first size
+        }
+
+        if (firstColorOption) {
+            firstColorOption.style.border = "2px solid #333"; // Highlight first color
+        }
+    });
+
+</script>
+
+<script>
+    // Function to extract query parameters from URL
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    // Fetch key from URL query parameters
+    var key = getParameterByName('key');
+
+
+</script>
+<script>
+    function initializeProductSelections() {
+        // Select the first measurement
+        const sizeOptions = document.querySelectorAll('.size-radio');
+        if (sizeOptions.length > 0) {
+            sizeOptions[0].click(); // Trigger a click event on the first size option
+        }
+
+        // Select the first color
+        const colorOptions = document.querySelectorAll('.color-option');
+        if (colorOptions.length > 0) {
+            const firstColorOption = colorOptions[0];
+            firstColorOption.click(); // Trigger a click event on the first color option
+
+            // Optionally update the product color text
+            const productColorElement = document.getElementById('product-color');
+            if (productColorElement) {
+                const colorName = firstColorOption.getAttribute('data-color-name');
+                productColorElement.textContent = colorName;
+            }
+        }
+
+        // Remove "Must choose a color" message if present
+        const colorHintText = document.getElementById('color-hint-text');
+        if (colorHintText) {
+            colorHintText.style.display = 'none';
+        }
+    }
+
+    // Function to handle size selection
+    function SizeRef(element) {
+        const selectedSize = element.querySelector('.size-value').textContent;
+        document.getElementById('product-Size').textContent = selectedSize;
+
+        // Update any size hints if necessary
+        const sizeHintText = document.getElementById('size-hint-text');
+        if (sizeHintText) {
+            sizeHintText.style.display = 'none';
+        }
+    }
+
+    // Function to handle color selection
+    function ColorRef(element) {
+        const selectedColor = element.getAttribute('data-color-name');
+        document.getElementById('product-color').textContent = selectedColor;
+
+        // Remove any color hint text
+        const colorHintText = document.getElementById('color-hint-text');
+        if (colorHintText) {
+            colorHintText.style.display = 'none';
+        }
+    }
+
+    // Example of calling the function on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeProductSelections();
+    });
+</script>
+
+<script>
+
+
+    // function fetchProducts(key) {
+    //     fetch(`${url}/Stores/${uid}/Products/${key}.json`)
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error("Network response was not ok");
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((productDetails) => {
+    //             // Check and set default image source if necessary
+    //             setDefaultImageSource(productDetails);
+
+    //             // Elements to populate
+    //             const productTitleElement = document.getElementById('productTitle');
+    //             const hints = document.getElementById('hints');
+    //             // const freeshipping = document.getElementById('freeshipping-hint');
+    //             const productID = document.getElementById('productID');
+    //             const productImageElement = document.getElementById('productImage');
+    //             const productImage2Element = document.getElementById('productImage2');
+    //             const productImage3Element = document.getElementById('productImage3');
+    //             const productImage4Element = document.getElementById('productImage4');
+    //             const productImage5Element = document.getElementById('productImage5');
+    //             const productImage6Element = document.getElementById('productImage6');
+    //             const prePriceElement = document.getElementById('preprice'); // New element for original price
+    //             const productPriceElement = document.getElementById('productPrice'); // New element for product price
+    //             const BrandNameElement = document.getElementById('BrandName');
+    //             const hintElement = document.getElementById('hint');
+    //             const categoryElement = document.getElementById('category');
+    //             const pieceElement = document.getElementById('piece');
+    //             const detailsElement = document.getElementById('product-details');
+
+    //             BrandNameElement.innerText = productDetails["Brand-Name"];
+    //             BrandNameElement.classList.add("pointer");
+    //             BrandNameElement.setAttribute(
+    //                 "onclick",
+    //                 `brand('${productDetails["Brand-Name"]}')`
+    //             );
+    //             const addToFavouriteDiv = document.getElementById("addtofavouritediv");
+    //             addToFavouriteDiv.innerHTML = `
+    //             <button id="addtofavourite" class="Add-to-Cart" onclick="addfavouriteproduct('${key}')">
+    //                 <i class="bi bi-heart" style="font-size: small;"></i>
+    //             </button>
+    //         `;
+
+
+    //             productTitleElement.innerText = productDetails["product-title"];
+    //             productID.innerText = key;
+    //             const imageKeys = ["product-photo", "product-photo2", "product-photo3", "product-photo4", "product-photo5", "product-photo6"];
+    //             const imageElements = [productImageElement, productImage2Element, productImage3Element, productImage4Element, productImage5Element, productImage6Element];
+
+    //             imageKeys.forEach((key, index) => {
+    //                 const imageUrl = productDetails[key];
+    //                 const imageElement = imageElements[index];
+
+    //                 if (imageUrl) {
+    //                     imageElement.src = imageUrl;
+
+    //                 } else {
+    //                     imageElement.style.display = 'none';  // Hide the image if empty
+    //                 }
+    //             });
+
+
+
+
+    //             // Calculate and display prices
+    //             const saleAmount = productDetails["sale-amount"];
+    //             const originalPrice = productDetails["Product-Price"];
+    //             categoryElement.innerText = productDetails["category"];
+    //             pieceElement.innerText = productDetails["piece"];
+    //             detailsElement.innerText = productDetails["product-description"];
+    //             let prePriceHTML = '';
+    //             let productPriceHTML = '';
+
+    //             const salePrice = calculateSalePrice(originalPrice, saleAmount);
+    //             if (saleAmount) {
+    //                 prePriceHTML = `<p id="preprice" class="m-5 mb-10"><del class="pre-sale">${originalPrice} EGP</del></p>`;
+    //                 productPriceHTML = `<p id="productPrice" class="m-5 mb-10">${salePrice} EGP</p>`;
+    //             } else {
+    //                 productPriceHTML = `<p id="productPrice" class="m-5 mb-10">${originalPrice} EGP</p>`;
+    //             }
+
+    //             prePriceElement.innerHTML = prePriceHTML;
+    //             productPriceElement.innerHTML = productPriceHTML;
+
+
+
+    //             // Check if the product qualifies for free shipping
+    //             let freeShippingHTML = "";
+    //             if (salePrice >= parseInt(freeshipping, 10)) { // Parse freeshipping to an integer during comparison
+    //                 freeShippingHTML = `<div class="freeshipping-hint hint mb-10" id="free-shipping">
+    //     Free Shipping on this item<i class="bi bi-truck"></i>
+    // </div>`;
+    //             }
+
+    //             // Check if the product is a best seller
+    //             const bestSellerHTML = productDetails["bestseller"]
+    //                 ? `<div class="best-seller-hint hint mb-10" id="best-seller">
+    //     Bestseller<i class="bi bi-lightning-charge"></i>
+    // </div>`
+    //                 : "";
+
+    //             // Combine and populate hints
+    //             hints.innerHTML = `${bestSellerHTML}${freeShippingHTML}`;
+
+
+
+
+
+
+    //             // Get related products
+    //             const category = productDetails["category"];
+    //             const piece = productDetails["piece"];
+    //             const type = productDetails["type"];
+    //             fetchRelatedProducts(category, piece, type, key);
+
+    //             // Handling sizes and colors
+    //             const sizes = productDetails.sizes;
+    //             const sizeTabs = document.querySelector('.size-tabs');
+    //             const colorOptions = document.querySelector('.color-options');
+    //             const productSizeElement = document.getElementById('product-Size');
+    //             const productColorElement = document.getElementById('product-color');
+
+    //             sizeTabs.innerHTML = ''; // Clear previous size options
+    //             colorOptions.innerHTML = ''; // Clear previous color options
+
+    //             for (const size in sizes) {
+    //                 const sizeRadio = document.createElement('div');
+    //                 sizeRadio.classList.add('size-radio');
+    //                 sizeRadio.setAttribute('onclick', 'SizeRef(this)');
+
+    //                 const label = document.createElement('label');
+    //                 label.classList.add('radio-input_option');
+
+    //                 const span = document.createElement('span');
+    //                 span.classList.add('size-value');
+    //                 span.innerText = size;
+
+    //                 label.appendChild(span);
+    //                 sizeRadio.appendChild(label);
+    //                 sizeTabs.appendChild(sizeRadio);
+
+    //                 // Event listener for size selection
+    //                 sizeRadio.addEventListener('click', function () {
+    //                     productSizeElement.innerText = size;
+    //                     colorOptions.innerHTML = ''; // Clear color options when size is selected
+
+    //                     // Hide the hint element
+    //                     hintElement.classList.add('hidden');
+
+    //                     const colors = sizes[size];
+
+    //                     for (const color in colors) {
+    //                         const colorOption = document.createElement('div');
+    //                         colorOption.classList.add('color-option');
+
+    //                         colorOption.style.backgroundColor = colors[color]["color-value"];
+    //                         colorOption.setAttribute('data-color-name', color);
+    //                         colorOption.setAttribute('onclick', 'ColorRef(this)'); // Add the onclick attribute
+    //                         colorOption.addEventListener('click', function (colorName) {
+    //                             var colorName = colorOption.getAttribute('data-color-name');
+    //                             // Call the updateProductImages function with the specified parameters
+    //                             showPreloader();
+    //                             updateProductImages(colorName);
+    //                             // Hide the preloader after 500 milliseconds (0.5 seconds)
+    //                             setTimeout(() => {
+    //                                 hidePreloader();
+    //                             }, 500);
+    //                         });
+    //                         colorOption.addEventListener('click', function () {
+    //                             productColorElement.innerText = color;
+    //                             checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+
+    //                             // Display stock quantity
+    //                             if (colorOptions) {
+    //                                 // Iterate over colors
+    //                                 const colors = sizes[size];
+    //                                 for (const color in colors) {
+    //                                     const qty = colors[color]["qty"];
+    //                                     const stockContainer = document.getElementById('stockContainer');
+    //                                     const stockMessage = document.getElementById('stockMessage');
+
+    //                                     if (stockContainer && stockMessage) {
+    //                                         if (qty <= 5) {
+    //                                             stockMessage.innerText = `Only ${qty} left in stock`;
+    //                                             stockContainer.classList.remove('hidden'); // Show the container
+    //                                         } else {
+    //                                             stockMessage.innerText = ''; // Clear the message
+    //                                             stockContainer.classList.add('hidden'); // Hide the container
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+
+    //                         });
+
+    //                         colorOptions.appendChild(colorOption);
+    //                     }
+
+    //                     checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+    //                 });
+    //             }
+
+    //             checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+    //             initializeProductSelections();
+
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching product details:", error);
+    //         });
+    // }
+
+
+    //
+    function fetchProducts(key) {
+        fetch(`${url}/Stores/${uid}/Products/${key}.json`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((productDetails) => {
+                // Check and set default image source if necessary
+                setDefaultImageSource(productDetails);
+
+                // Elements to populate
+                const productTitleElement = document.getElementById('productTitle');
+                const hints = document.getElementById('hints');
+                const productID = document.getElementById('productID');
+                const productImageElement = document.getElementById('productImage');
+                const productImage2Element = document.getElementById('productImage2');
+                const productImage3Element = document.getElementById('productImage3');
+                const productImage4Element = document.getElementById('productImage4');
+                const productImage5Element = document.getElementById('productImage5');
+                const productImage6Element = document.getElementById('productImage6');
+                const prePriceElement = document.getElementById('preprice');
+                const productPriceElement = document.getElementById('productPrice');
+                const BrandNameElement = document.getElementById('BrandName');
+                const hintElement = document.getElementById('hint');
+                const categoryElement = document.getElementById('category');
+                const pieceElement = document.getElementById('piece');
+                const detailsElement = document.getElementById('product-details');
+
+                // Populate brand name and title
+                BrandNameElement.innerText = productDetails["Brand-Name"];
+                BrandNameElement.classList.add("pointer");
+                BrandNameElement.setAttribute(
+                    "onclick",
+                    `brand('${productDetails["Brand-Name"]}')`
+                );
+
+                // Add to favourite button
+                const addToFavouriteDiv = document.getElementById("addtofavouritediv");
+                addToFavouriteDiv.innerHTML = `
+                <button id="addtofavourite" class="Add-to-Cart" onclick="addfavouriteproduct('${key}')">
+                    <i class="bi bi-heart" style="font-size: small;"></i>
+                </button>
+            `;
+
+                // Populate product title and ID
+                productTitleElement.innerText = productDetails["product-title"];
+                productID.innerText = key;
+
+                // Array of image keys and corresponding elements
+                const imageKeys = ["product-photo", "product-photo2", "product-photo3", "product-photo4", "product-photo5", "product-photo6"];
+                const imageElements = [productImageElement, productImage2Element, productImage3Element, productImage4Element, productImage5Element, productImage6Element];
+
+                // Loop through image keys and elements
+                imageKeys.forEach((key, index) => {
+                    const imageUrl = productDetails[key];
+                    const imageElement = imageElements[index];
+
+                    if (imageUrl) {
+                        imageElement.src = imageUrl; // Set image source if URL exists
+                    } else {
+                        imageElement.remove(); // Remove the <img> element if URL is empty
+                    }
+                });
+
+                // Calculate and display prices
+                const saleAmount = productDetails["sale-amount"];
+                const originalPrice = productDetails["Product-Price"];
+                categoryElement.innerText = productDetails["category"];
+                pieceElement.innerText = productDetails["piece"];
+                detailsElement.innerText = productDetails["product-description"];
+
+                let prePriceHTML = '';
+                let productPriceHTML = '';
+
+                const salePrice = calculateSalePrice(originalPrice, saleAmount);
+                if (saleAmount) {
+                    prePriceHTML = `<p id="preprice" class="m-5 mb-10"><del class="pre-sale">${originalPrice} EGP</del></p>`;
+                    productPriceHTML = `<p id="productPrice" class="m-5 mb-10">${salePrice} EGP</p>`;
+                } else {
+                    productPriceHTML = `<p id="productPrice" class="m-5 mb-10">${originalPrice} EGP</p>`;
+                }
+
+                prePriceElement.innerHTML = prePriceHTML;
+                productPriceElement.innerHTML = productPriceHTML;
+
+                // Check if the product qualifies for free shipping
+                let freeShippingHTML = "";
+                if (salePrice >= parseInt(freeshipping, 10)) {
+                    freeShippingHTML = `<div class="freeshipping-hint hint mb-10" id="free-shipping">
+                    Free Shipping on this item<i class="bi bi-truck"></i>
+                </div>`;
+                }
+
+                // Check if the product is a best seller
+                const bestSellerHTML = productDetails["bestseller"]
+                    ? `<div class="best-seller-hint hint mb-10" id="best-seller">
+                    Bestseller<i class="bi bi-lightning-charge"></i>
+                </div>`
+                    : "";
+
+                // Combine and populate hints
+                hints.innerHTML = `${bestSellerHTML}${freeShippingHTML}`;
+
+                // Get related products
+                const category = productDetails["category"];
+                const piece = productDetails["piece"];
+                const type = productDetails["type"];
+                fetchRelatedProducts(category, piece, type, key);
+
+                // Handling sizes and colors
+                const sizes = productDetails.sizes;
+                const sizeTabs = document.querySelector('.size-tabs');
+                const colorOptions = document.querySelector('.color-options');
+                const productSizeElement = document.getElementById('product-Size');
+                const productColorElement = document.getElementById('product-color');
+
+                sizeTabs.innerHTML = ''; // Clear previous size options
+                colorOptions.innerHTML = ''; // Clear previous color options
+
+                for (const size in sizes) {
+                    const sizeRadio = document.createElement('div');
+                    sizeRadio.classList.add('size-radio');
+                    sizeRadio.setAttribute('onclick', 'SizeRef(this)');
+
+                    const label = document.createElement('label');
+                    label.classList.add('radio-input_option');
+
+                    const span = document.createElement('span');
+                    span.classList.add('size-value');
+                    span.innerText = size;
+
+                    label.appendChild(span);
+                    sizeRadio.appendChild(label);
+                    sizeTabs.appendChild(sizeRadio);
+
+                    // Event listener for size selection
+                    sizeRadio.addEventListener('click', function () {
+                        productSizeElement.innerText = size;
+                        colorOptions.innerHTML = ''; // Clear color options when size is selected
+
+                        // Hide the hint element
+                        hintElement.classList.add('hidden');
+
+                        const colors = sizes[size];
+
+                        for (const color in colors) {
+                            const colorOption = document.createElement('div');
+                            colorOption.classList.add('color-option');
+
+                            colorOption.style.backgroundColor = colors[color]["color-value"];
+                            colorOption.setAttribute('data-color-name', color);
+                            colorOption.setAttribute('onclick', 'ColorRef(this)');
+                            colorOption.addEventListener('click', function (colorName) {
+                                var colorName = colorOption.getAttribute('data-color-name');
+                                showPreloader();
+                                updateProductImages(colorName);
+                                setTimeout(() => {
+                                    hidePreloader();
+                                }, 500);
+                            });
+                            colorOption.addEventListener('click', function () {
+                                productColorElement.innerText = color;
+                                checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+
+                                // Display stock quantity
+                                if (colorOptions) {
+                                    const colors = sizes[size];
+                                    for (const color in colors) {
+                                        const qty = colors[color]["qty"];
+                                        const stockContainer = document.getElementById('stockContainer');
+                                        const stockMessage = document.getElementById('stockMessage');
+
+                                        if (stockContainer && stockMessage) {
+                                            if (qty <= 5) {
+                                                stockMessage.innerText = `Only ${qty} left in stock`;
+                                                stockContainer.classList.remove('hidden');
+                                            } else {
+                                                stockMessage.innerText = '';
+                                                stockContainer.classList.add('hidden');
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            colorOptions.appendChild(colorOption);
+                        }
+
+                        checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+                    });
+                }
+
+                checkAndToggleButton("product-Size", "product-color", "addToCartButton");
+                initializeProductSelections();
+            })
+            .catch((error) => {
+                console.error("Error fetching product details:", error);
+            });
+    }
+
+    function fetchRelatedProducts(category, piece, type, currentProductKey) {
+        fetch(`${url}/Stores/${uid}/Products.json`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((allProducts) => {
+                const relatedProductsContainer = document.querySelector('.related-products-container');
+                relatedProductsContainer.innerHTML = ''; // Clear existing related products
+
+                const relatedProducts = [];
+                for (const key in allProducts) {
+                    if (key !== currentProductKey) {
+                        const product = allProducts[key];
+                        // Check for matching category, piece, and type
+                        if (
+                            product.category === category &&
+                            product.piece === piece &&
+                            product.type === type
+                        ) {
+                            relatedProducts.push({ key, ...product });
+                        }
+                    }
+                }
+
+                // Sort products randomly and limit to 10
+                const maxProducts = 10;
+                const shuffledProducts = relatedProducts.sort(() => Math.random() - 0.5);
+                shuffledProducts.slice(0, maxProducts).forEach((product) => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('related-product-card');
+                    productCard.setAttribute('onclick', `productDetails('${product.key}')`);
+
+                    const productPrice = parseFloat(product["Product-Price"]);
+                    const saleAmount = parseFloat(product["sale-amount"]);
+                    const finalPrice = saleAmount > 0
+                        ? productPrice - (productPrice * (saleAmount / 100))
+                        : productPrice;
+
+                    // Extract and handle colors
+                    let colorOptionsHtml = "";
+                    let seenColors = new Set();
+                    let extraColorsCount = 0;
+
+                    if (product.sizes) {
+                        Object.keys(product.sizes).forEach((size) => {
+                            const sizeData = product.sizes[size];
+                            Object.keys(sizeData).forEach((color) => {
+                                const colorValue = sizeData[color]["color-value"];
+                                if (!seenColors.has(colorValue)) {
+                                    seenColors.add(colorValue);
+                                    if (seenColors.size <= 3) {
+                                        colorOptionsHtml += `
+                                        <div class="color-option2" 
+                                             style="background-color: ${colorValue};" 
+                                             data-color-name="${color}">
+                                        </div>`;
+                                    } else {
+                                        extraColorsCount++;
+                                    }
+                                }
+                            });
+                        });
+                    }
+
+                    // If there are extra colors, add the "more" circle
+                    if (extraColorsCount > 0) {
+                        colorOptionsHtml += `
+                        <div class="color-option2 flex center align-items font-small" 
+                             style="background-color: #e2e2e2;" 
+                             data-color-name="more">+${extraColorsCount}</div>`;
+                    }
+
+                    // Populate the product card HTML
+                    productCard.innerHTML = `
+                    <img class="related-product-image" 
+                        src="${product["product-photo"]}" 
+                        alt="${product["product-title"]}">
+                        <div class="card-content">
+                        <div class="color-options m-5 mb-7 center">${colorOptionsHtml}</div>
+                    <h4 class="related-product-title">${product["product-title"]}</h4>
+                    <p class="related-product-price">${finalPrice} EGP</p>
+                    </div>
+                `;
+
+                    relatedProductsContainer.appendChild(productCard);
+                });
+
+                if (relatedProducts.length === 0) {
+                    relatedProductsContainer.innerHTML = '<p class="no-related-products">No related products found.</p>';
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching related products:", error);
+            });
+    }
+
+
+    function calculateSalePrice(originalPrice, saleAmount) {
+        return originalPrice - (originalPrice * (saleAmount / 100));
+    }
+
+    fetchProducts(key);
+
+    //fetchProducts(key)
+
+    function SizeRef() {
+        const colorOptions = document.getElementById('product-color');
+        if (colorOptions) {
+            colorOptions.innerHTML = '';
+        }
+    }
+    // Function to show preloader
+    function showPreloader() {
+        document.getElementById('preloader').classList.remove('hidden');
+
+
+    }
+
+    // Function to hide preloader
+    function hidePreloader() {
+        document.getElementById('preloader').classList.add('hidden');
+
+
+    }
+
+    // Fetch product details after 2 seconds
+    setTimeout(() => {
+
+        hidePreloader(); // Hide preloader after 2 seconds
+        // Fetch product details
+    }, 1000);
+
+
+    // on click on color options 
+
+    function updateProductImages(colorName) {
+        const size = document.getElementById('product-Size').innerText;
+        const productID = document.getElementById('productID').innerText;
+        const url = `${storeurl}/Stores/${uid}/Products/${productID}/sizes/${size}/${colorName}.json`;
+
+        fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Check and set default image source if necessary
+                // setDefaultImageSource_PD(data, "img1", "img2", "img3", "img4", "img5", "img6");
+
+                const productImageElement = document.getElementById('productImage');
+                const productImage2Element = document.getElementById('productImage2');
+                const productImage3Element = document.getElementById('productImage3');
+                const productImage4Element = document.getElementById('productImage4');
+                const productImage5Element = document.getElementById('productImage5');
+                const productImage6Element = document.getElementById('productImage6');
+                const images = [data.img1, data.img2, data.img3, data.img4, data.img5, data.img6];
+                const imageElements = [productImageElement, productImage2Element, productImage3Element, productImage4Element, productImage5Element, productImage6Element];
+
+                imageElements.forEach((element, index) => {
+                    if (element) {
+                        if (images[index]) {
+                            element.src = images[index];
+
+                        } else {
+                            element.remove();
+                        }
+                    }
+                });
+
+
+
+            })
+            .catch((error) => {
+                console.error("Error fetching product images:", error);
+            });
+    }
+
+
+    function copyToClipboard() {
+        const productIDElement = document.getElementById("productID");
+        const productID = productIDElement.innerText.trim();
+
+        if (!productID) {
+            console.warn("No product ID to copy!");
+            return;
+        }
+
+        navigator.clipboard.writeText(productID)
+            .then(() => {
+                const originalText = productIDElement.innerText;
+                productIDElement.innerText = "Copied!";
+                productIDElement.classList.add("copied");
+
+                setTimeout(() => {
+                    productIDElement.innerText = originalText;
+                    productIDElement.classList.remove("copied");
+                }, 1000);
+            })
+            .catch(err => {
+                console.error("Failed to copy:", err);
+            });
+    }
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        function SizeRef(selectedElement) {
+            // Get all the size-radio elements
+            const sizeElements = document.querySelectorAll('.size-radio');
+
+            // Loop through each size and reset the background and text color
+            sizeElements.forEach(function (element) {
+                element.style.backgroundColor = ''; // Reset background color
+                element.style.color = ''; // Reset text color
+            });
+
+            // Set the background color and text color of the clicked element
+            selectedElement.style.backgroundColor = '#333';
+            selectedElement.style.color = 'white';
+
+            // Reset the text content of the color text element
+            const productColorElement = document.getElementById('product-color');
+            if (productColorElement) {
+                productColorElement.innerText = ''; // Set the content to be empty
+            }
+
+            // Show the hint text asking the user to select a color
+            const hintTextElement = document.getElementById('color-hint-text');
+            if (hintTextElement) {
+                // Set the full hint text immediately
+                hintTextElement.innerHTML = 'Must choose a color <i class="bi bi-arrow-down"></i>';
+
+                // Make the text visible and add animation class
+                hintTextElement.style.display = 'block';
+                hintTextElement.classList.add('rolling-animation');
+
+            }
+            checkSizeSelection();
+        }
+
+        function checkSizeSelection() {
+            const selectedSize = document.querySelector('.size-radio[style*="background-color: rgb(51, 51, 51)"]');
+            const sizeHintTextElement = document.getElementById('size-hint-text');
+
+            if (!selectedSize) {
+                // Show size hint if no size is selected
+                if (sizeHintTextElement) {
+                    sizeHintTextElement.innerHTML = 'Must choose a size <i class="bi bi-arrow-down"></i>';
+                    sizeHintTextElement.style.display = 'block';
+                    sizeHintTextElement.classList.add('rolling-animation');
+                }
+            } else {
+                // Hide size hint if a size is selected
+                if (sizeHintTextElement) {
+                    sizeHintTextElement.style.display = 'none';
+                    sizeHintTextElement.innerText = ''; // Clear the hint text
+                    sizeHintTextElement.classList.remove('rolling-animation');
+                }
+            }
+        }
+
+        function ColorRef(selectedElement) {
+            // Get all the color-option elements
+            const colorElements = document.querySelectorAll('.color-option');
+
+            // Loop through each color and reset the border
+            colorElements.forEach(function (element) {
+                element.style.border = ''; // Reset the border
+            });
+
+            // Set the border of the clicked color to 5px solid #c1c1c1
+            selectedElement.style.borderBottom = '5px solid #c1c1c1';
+
+            // Show or hide the color hint text
+            const hintTextElement = document.getElementById('color-hint-text');
+            if (hintTextElement) {
+                hintTextElement.style.display = 'none'; // Hide the hint text once a color is selected
+                hintTextElement.innerText = ''; // Clear the hint text
+                hintTextElement.classList.remove('rolling-animation');
+            }
+        }
+
+        // Call this function when the user needs a hint for color selection
+        function showColorHint() {
+            const hintTextElement = document.getElementById('color-hint-text');
+            if (hintTextElement) {
+                hintTextElement.innerHTML = 'Please select a color <i class="bi bi-arrow-down"></i>';
+                hintTextElement.style.display = 'block';
+                hintTextElement.classList.add('rolling-animation');
+            }
+        }
+
+        // Expose these functions to the global scope so they can be used in HTML onclick events
+        window.SizeRef = SizeRef;
+        window.ColorRef = ColorRef;
+        checkSizeSelection();
+    });
+    // Get references to the button and details section
+    const showDetailsButton = document.getElementById('showdetails');
+    const detailsSection = document.getElementById('details-section');
+
+    // Add a click event listener to the button
+    showDetailsButton.addEventListener('click', function () {
+        // Toggle the 'hidden' class on the details section
+        if (detailsSection.classList.contains('hidden')) {
+            detailsSection.classList.remove('hidden');
+            showDetailsButton.innerHTML = 'Hide Details <i class="bi bi-arrow-up-short"></i>';
+        } else {
+            detailsSection.classList.add('hidden');
+            showDetailsButton.innerHTML = 'Show Details <i class="bi bi-arrow-down-short"></i>';
+        }
+    });
+
+
+
+</script>
+
+
+
+
+<script src="./assets/js/store-contact.js"></script>
+<script src="./assets/js/update-cart-amont.js"></script>
+<script src="./assets/js/route.js"></script>
+<script src="./assets/js/all.js"></script>
+<script src="./assets/js/report.js"></script>
+<script src="./assets/js/rendering-megamenu.js"></script>
+<script src="./assets/js/rendering-search.js"></script>
+<script src="./assets/js/addfavouriteproduct.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

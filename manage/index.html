@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <title id="title"></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/static.js"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+</head>
+
+<body id="top">
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="flex flex-column align-items">
+                <img class="w-100" src="./assets/images/iicon.png">
+            </div>
+            <form class="flex flex-column align-items" id="LogIn">
+                <div class="formbold-input-group max-500">
+                    <label for="username" class="formbold-form-label max-500">UserName</label>
+                    <input type="text" name="username" id="username" placeholder="Enter your UserName"
+                        class="formbold-form-input shadow max-500" />
+                </div>
+                <div class="formbold-input-group max-500">
+                    <label for="password" class="formbold-form-label max-500">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Enter your Password"
+                        class="formbold-form-input shadow max-500" />
+                </div>
+                <button id="LogInButton" type="submit" class="formbold-btn flex center align-items max-500"
+                    style="width: 100px;height: 40px;">
+                    <div id="sub-txt">
+                        <p>Login</p>
+                    </div>
+                    <div id="sub-spin" class="spinner-sm hidden"></div>
+                </button>
+            </form>
+
+
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+            <script>
+                const firebaseConfig = {
+                    apiKey: "AIzaSyDss53pHibCpqo87_1bhoUHkf8Idnj-Fig",
+                    authDomain: "matager-f1f00.firebaseapp.com",
+                    databaseURL: "https://matager-f1f00-default-rtdb.firebaseio.com",
+                    projectId: "matager-f1f00",
+                    storageBucket: "matager-f1f00.appspot.com",
+                    messagingSenderId: "922824110897",
+                    appId: "1:922824110897:web:b7978665d22e2d652e7610",
+                    measurementId: "G-FWS29Z8GMT"
+                };
+
+                // Initialize Firebase
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth();
+
+                // Function to log in and fetch store info
+                const loginUser = async (username, password) => {
+                    try {
+                        // Show spinner inside button
+                        document.getElementById('sub-txt').classList.add('hidden');
+                        document.getElementById('sub-spin').classList.remove('hidden');
+
+                        // Sign in with email and password
+                        const userCredential = await auth.signInWithEmailAndPassword(username, password);
+                        const user = userCredential.user;
+                        const uid = user.uid;
+                        const createdAt = user.metadata.creationTime;
+                        const lastSignInTime = user.metadata.lastSignInTime;
+                        const displayName = user.displayName;
+
+                        // Store user info in local storage
+                        localStorage.setItem('uid', uid);
+                        localStorage.setItem('displayName', displayName);
+                        localStorage.setItem('username', username);
+                        localStorage.setItem('password', password);
+                        localStorage.setItem('createdAt', createdAt);
+                        localStorage.setItem('lastSignInTime', lastSignInTime);
+
+                        // Get ID token
+                        const idToken = await user.getIdToken();
+
+                        // Fetch store info
+                        const storeResponse = await fetch(`https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/store-info.json?auth=${idToken}`);
+                        const storeData = await storeResponse.json();
+
+                        if (storeData) {
+                            // Store plan type and ending date in local storage
+                            localStorage.setItem('planType', storeData.plan);
+                            localStorage.setItem('endingDate', storeData['ending-date']);
+                        }
+
+                        // Redirect after fetching the necessary data
+                        window.location.href = './main.html';
+
+                    } catch (error) {
+                        // Handle authentication error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Authentication Error',
+                            text: error.message,
+                        });
+                        // Hide spinner and show text again
+                        document.getElementById('sub-txt').classList.remove('hidden');
+                        document.getElementById('sub-spin').classList.add('hidden');
+                    }
+                };
+
+                // Event listener for form submission
+                document.getElementById('LogIn').addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    // Call login function
+                    loginUser(username, password);
+                });
+            </script>
+
+            <style>
+                input,
+                label {
+                    color: inherit;
+                    border-color: inherit;
+                }
+
+                body.dark input {
+                    color: #888888;
+                    border-color: #8e8e8e80;
+                }
+
+                body.dark select,
+                body.dark textarea {
+                    color: #888888;
+                    border-color: #8e8e8e80;
+                    background: black;
+                }
+
+                body.dark label {
+                    color: #545454;
+                    border-color: #8e8e8e80;
+                }
+
+                body.dark button {
+                    color: white;
+                    background-color: black;
+                }
+
+                body.dark .formbold-sub-btn {
+                    color: white;
+                    background-color: #6a64f1 !important;
+                }
+
+                body.dark .swal2-container.swal2-center.swal2-backdrop-show div {
+                    background-color: #141414;
+                }
+
+                body.dark .swal2-success-ring,
+                body.dark .swal2-success-circular-line-left,
+                body.dark .swal2-success-circular-line-right,
+                body.dark .swal2-success-fix {
+                    background-color: inherit !important;
+                }
+            </style>
+        </div>
+    </main>
+</body>
+
+</html>

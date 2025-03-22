@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+<!-- // -->
+<html lang="en" class="hydrated">
+
+<head>
+
+    <!-- <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css"> -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- //sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="./js/static.js"></script>
+    <script src="./js/toAll.js"></script>
+    <script src="./js/checkUserAuthStatus.js"></script>
+    <script src="./js/inithialize-firebase.js"></script>
+    <script src="./js/checkavailableitems.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // Function to check if the user is authenticated before fetching size charts
+        function checkAuthAndFetchSizeCharts() {
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    checkavailableitems(user)
+                    try {
+                        // Get the ID token
+                        const idToken = await user.getIdToken();
+
+                        // Construct the URL with the user's UID
+                        const url = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${user.uid}/sizecharts.json?auth=${idToken}`;
+
+                        // Fetch size charts
+                        const response = await fetch(url, {
+                            headers: {
+                                Authorization: `Bearer ${idToken}` // Send token for authentication
+                            }
+                        });
+
+                        const sizeCharts = await response.json();
+                        const selectElement = document.getElementById('size-chart');
+                        const selectElementArea = document.getElementById('size-chart-area');
+
+                        // Clear previous options
+                        selectElement.innerHTML = "";
+
+                        // Check if size charts exist
+                        if (!sizeCharts || Object.keys(sizeCharts).length === 0) {
+                            console.warn("No size charts found.");
+
+                            // Create a disabled placeholder option
+                            const placeholderOption = document.createElement("option");
+                            placeholderOption.value = "";
+                            placeholderOption.disabled = true;
+                            placeholderOption.selected = true;
+                            placeholderOption.textContent = "No size charts available";
+                            selectElement.appendChild(placeholderOption);
+
+                            // Keep select disabled if no size charts are available
+                            selectElement.disabled = true;
+
+                            // Ensure "Add Chart" link is present without overwriting the container
+                            if (!document.getElementById('addChart')) {
+                                const addChartLink = document.createElement("a");
+                                addChartLink.href = "./sizecharts.html";
+                                addChartLink.classList.add('addchartlink');
+                                addChartLink.id = "addChart";
+                                addChartLink.textContent = "Add a Chart";
+                                selectElementArea.appendChild(addChartLink);
+                            }
+
+                            return;
+                        }
+
+                        // Add default "Select a size chart" option
+                        const defaultOption = document.createElement("option");
+                        defaultOption.value = "";
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        defaultOption.textContent = "Select a size chart";
+                        selectElement.appendChild(defaultOption);
+
+                        // Populate dropdown with size charts
+                        Object.entries(sizeCharts).forEach(([chartId, chart]) => {
+                            const option = document.createElement("option");
+                            option.value = chart.sizeChartUrl;
+                            option.setAttribute("data-id", chartId);
+                            option.textContent = chart.chartName;
+                            selectElement.appendChild(option);
+                        });
+
+                        // // Append "Add Chart" below the dropdown (if not already added)
+                        // if (!document.getElementById('addChart')) {
+                        //     const addChartLink = document.createElement("a");
+                        //     addChartLink.href = "./sizecharts.html";
+                        //     addChartLink.id = "addChart";
+                        //     addChartLink.classList.add('addchartlink');
+                        //     addChartLink.textContent = "Add a Chart";
+                        //     selectElementArea.appendChild(addChartLink);
+                        // }
+
+
+                        // Add event listener to handle selection
+                        selectElement.addEventListener("change", function () {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const selectedChartId = selectedOption.getAttribute("data-id");
+                            const selectedChartUrl = selectedOption.value;
+
+                            if (!selectedChartId) return;
+
+                            // Remove 'selected' attribute from all options
+                            Array.from(this.options).forEach(opt => opt.removeAttribute("selected"));
+
+                            // Set 'selected' attribute to the chosen option
+                            selectedOption.setAttribute("selected", "selected");
+
+                        });
+
+                    } catch (error) {
+                        console.error("Error fetching size charts:", error);
+                    }
+                } else {
+                    // Redirect if user is not authenticated
+                    console.error("User is not authenticated. Redirecting...");
+                    window.location.href = './index.html';
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", checkAuthAndFetchSizeCharts);
+    </script>
+
+
+    <script src="./js/Logout.js"></script>
+
+</head>
+
+<body id="top" onload="checkAuthAndRedirect()">
+
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="mb-20 flex align-items space-between">
+
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+
+            </div>
+            <div class="mb-20 flex align-items space-evenly">
+                <div class="profile-icon add target-ico circle-ico" id="add-btn"
+                    onclick="showForm('add-product-form', 'add-btn')" title="Add Product">
+                    <span><i class="bi bi-folder-plus"></i></span>
+                </div>
+                <div class="profile-icon edit circle-ico" id="edit-btn"
+                    onclick="showForm('edit-product-form', 'edit-btn')" title="Edit Product">
+                    <span><i class="bi bi-folder2-open"></i></span>
+                </div>
+                <div class="profile-icon delete circle-ico" id="delete-btn"
+                    onclick="showForm('delete-product-form', 'delete-btn')" title="Delete Product">
+                    <span><i class="bi bi-folder-x"></i></span>
+                </div>
+            </div>
+            <form class="addProduct" id="add-product-form">
+                <div class="progress-container">
+                    <div class="flex">
+                        <span class="stock-count stock-count-card flex align-items-center" id="stockCount">Available
+                            Products: <div class="spinner-sm spinner-sm-available-items ml-auto">
+                            </div>
+                            <p id="available-items-stock"></p>
+                        </span>
+                        <span class="stock-count stock-count-card flex align-items-center" id="">Uploaded Products: <div
+                                class="spinner-sm spinner-sm-available-items ml-auto">
+                            </div>
+                            <p id="total-products-count"></p>
+                        </span>
+                    </div>
+
+                    <div class="progress hidden" id="progress-bar-area">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="preview-area">
+
+                    <button type="button" class="formbold-form-label point no-bg-i:hover line-height preview-btn"
+                        id="previewButton">
+                        Preview
+                    </button>
+                </div>
+
+                <div class="formbold-input-group">
+                    <label for="producttitle" class="formbold-form-label"> Product-Title </label>
+                    <input type="text" name="product-title" id="producttitle" placeholder="Enter your product title"
+                        class="formbold-form-input shadow" />
+                </div>
+
+                <div class="formbold-input-group">
+                    <div class="flex center align-items gap-30 col590">
+                        <div class="flex gap-10 prices center">
+                            <div class="formbold-input-group m-LR-2 w-auto">
+                                <label for="brandname" class="formbold-form-label"> Brand-Name </label>
+                                <input type="text" name="Brand-Name" id="brandname" placeholder="Enter your brand name"
+                                    class="formbold-form-input shadow" />
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto">
+                                <label for="productprice" class="formbold-form-label"> Price </label>
+                                <input type="text" name="Product-Price" id="productprice" placeholder="EGP"
+                                    class="formbold-form-input shadow" />
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto">
+                                <label for="sale-amount" class="formbold-form-label"> Sale</label>
+                                <input type="text" name="sale-amount" id="sale-amount" placeholder="%"
+                                    class="formbold-form-input shadow" />
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto hidden">
+                                <label for="priceplusthecut" class="formbold-form-label"> priceplusthecut</label>
+                                <input type="text" name="priceplusthecut" id="priceplusthecut" placeholder="%"
+                                    class="formbold-form-input shadow" />
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto hidden">
+                                <label for="finalprice" class="formbold-form-label">Price After Sale</label>
+                                <input type="text" id="finalprice" placeholder="EGP" class="formbold-form-input shadow"
+                                    readonly>
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto">
+                                <label for="Storeprice" class="formbold-form-label">Final Price</label>
+                                <input type="text" name="Storeprice" id="Storeprice" placeholder="EGP"
+                                    class="formbold-form-input shadow" readonly>
+                            </div>
+                            <div class="formbold-input-group m-LR-2 w-auto" id="size-chart-area">
+                                <label for="chart" class="formbold-form-label">Charts</label>
+                                <div class="shadow mb-10 w-170">
+                                    <select id="size-chart" class="formbold-form-input font-sm chart-sel">
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <div class="flex align-items gap-10">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="BestsellerSwitcheradd">
+                                <label class="form-check-label font-sm" for="BestsellerSwitcheradd">
+                                    Mark as Best Seller <i class="bi bi-lightning-charge-fill"></i>
+                                </label>
+                            </div> -->
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="formbold-input-group">
+                    <div class="flex center align-items gap-20 sm640wrap">
+                        <div class="flex align-items gap-30">
+
+                            <div class="">
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="category" class="formbold-form-label txt-center">Category</label>
+                                    <div class="shadow">
+                                        <select name="category" id="category"
+                                            class="formbold-form-input s530150 font-sm  txt-center">
+                                            <option value="men">Men</option>
+                                            <option value="women">Women</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="Piece" class="formbold-form-label  txt-center">Piece</label>
+                                    <div class="shadow">
+                                        <select name="Piece" id="Piece"
+                                            class="formbold-form-input s530150 font-sm  txt-center">
+                                            <option value="Shoes">Shoes</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="Type" class="formbold-form-label  txt-center">Type</label>
+                                    <div class="shadow">
+                                        <select name="Type" id="Type"
+                                            class="formbold-form-input s530150 font-sm  txt-center">
+                                            <option value="Footwear">Footwear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="formbold-input-group">
+                            <label for="productdescription" class="formbold-form-label"> Product Description </label>
+                            <textarea rows="9" name="product-description" id="productdescription"
+                                placeholder="Type product description here..."
+                                class="formbold-form-input shadow"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="formbold-input-group">
+                    <div class="flex center align-items shadow p5 mb-20">
+                        <div>
+                            <div class="add-size-card">
+                                <label for="name" class="formbold-form-label"
+                                    style="font-weight: normal;font-size: small;margin-bottom:0 !important;">
+                                    Add Size
+                                </label>
+                                <button type="button"
+                                    class="formbold-form-label point addsizebtn no-bg-i:hover line-height"
+                                    id="add-more">
+                                    <div class="m2" id="add-more-rotate">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="input-container"></div>
+                </div>
+                <div class="flex center">
+                    <button id="sub-btn" type="submit"
+                        class="formbold-btn formbold-sub-btn flex center align-items gap-10">
+                        <div id="sub-txt">Submit</div>
+                        <div id="sub-spin" class="spinner-sm hidden">
+                        </div>
+                    </button>
+                </div>
+            </form>
+            <!-- Preview Modal -->
+            <!-- <div id="previewModal" class="modal">
+                <div class="content-product-modal shadow">
+                    <span class="close">&times;</span>
+                    <h2>Product Preview</h2>
+                    <div class="preview-details">
+                        <p><strong>Title:</strong> <span id="preview-title"></span></p>
+                        <p><strong>Brand:</strong> <span id="preview-brand"></span></p>
+                        <p><strong>Price:</strong> <span id="preview-price"></span> EGP</p>
+                        <p><strong>Sale:</strong> <span id="preview-sale"></span>%</p>
+                        <p><strong>Final Price:</strong> <span id="preview-final"></span> EGP</p>
+                        <p><strong>Category:</strong> <span id="preview-category"></span></p>
+                        <p><strong>Piece:</strong> <span id="preview-piece"></span></p>
+                        <p><strong>Type:</strong> <span id="preview-type"></span></p>
+                        <p><strong>Description:</strong></p>
+                        <p id="preview-description"></p>
+                    </div>
+                </div>
+            </div> -->
+            <div id="productModal" class="modal">
+                <div class="content-product-modal ">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <div id="product-div" class="flex center">
+
+
+                        <div class="content-photo-container">
+                            <button id="previous-button" class="previous-button none-op">
+                                <i class="bi bi-arrow-left-short arrow"></i>
+                            </button>
+
+                            <img id="productImage" class="product-image active" src="https://i.imgur.com/GFEQnnV.jpeg"
+                                alt="Product Image">
+
+
+                            <button id="next-button" class="next-button none-op">
+                                <i class="bi bi-arrow-right-short arrow"></i>
+                            </button>
+                        </div>
+                        <div class="details-info p-20">
+                            <h5 id="BrandName" class="mb-10 m-5 pl-0 ml-10"></h5>
+                            <h2 id="productTitle" class="m-5 ml-auto mb-10 ml-10"></h2>
+                            <p id="preprice" class="m-5 mb-10"><del class="pre-sale"></del></p>
+                            </p>
+                            <p id="productPrice-modal" class="m-5 mb-10"></p>
+                            </p>
+
+                            <div class="size m-5 mb-10">
+                                <label class="m-5 flex pb-7" for="product-Size">
+                                    Size:<p id="product-Size"></p>
+                                </label>
+                                <div class="rolling-container" id="size-hint-text" style="display: none;"></div>
+
+                                <div role="radiogroup" class="radio-group size-tabs mb-10">
+
+                                </div>
+                            </div>
+                            <div class="color-selector m-5 mb-10">
+                                <label class="m-5 flex align-items pb-7" for="product-color">Color:<p
+                                        id="product-color"></p>
+                                    <p></p>
+                                </label>
+                                <div id="color-hint-text"
+                                    style="display: none; font-size: 16px; color: rgb(51, 51, 51); margin-top: 10px;"
+                                    class=""></div>
+                                <div class="color-options m-5 flex-wrap width-80 mb-10">
+
+                                </div>
+                            </div>
+
+                            <div id="details-section" class="m-5 mb-10">
+                                <div class="flex align-items mb-5">
+                                    <h5 class="m-5 flex">Category :</h5>
+                                    <p class="" id="category"></p>
+                                </div>
+                                <div class="flex align-items mb-5">
+                                    <h5 class="m-5 flex">piece :</h5>
+                                    <p class="" id="piece"></p>
+                                </div>
+                                <div class="mb-5">
+                                    <h5 class="m-5 flex mt-10">Details:</h5>
+                                    <p class="m-5 line-height-30" id="product-details"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form id="edit-product-form" class="hidden editProduct">
+                <div class="flex center">
+                    <div class="input-wrapper">
+                        <input type="text" class="formbold-form-input w-300" id="product-id-input"
+                            placeholder="Enter item id you will edit">
+                        <button id="sub-btn" type="button" onclick="searchProduct()">
+                            <div id="sub-txt-edit">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <div id="sub-spin-edit" class="spinner-sm hidden"></div>
+                        </button>
+                    </div>
+                </div>
+                <div id="warning" class="flex center warning-txt"></div>
+                <div id="edititem-details" class="hidden">
+
+                    <div class="formbold-input-group mt-18">
+                        <div class="flex center align-items flex-wrap">
+                            <div class="drop-zone">
+                                <img id="mainimg1" src="" alt="Main Image 1"
+                                    onclick="document.getElementById('fileInput1').click();">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg2" src="" alt="Main Image 2"
+                                    onclick="document.getElementById('fileInput2').click();">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg3" src="" alt="Main Image 3"
+                                    onclick="document.getElementById('fileInput3').click();">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg4" src="" alt="Main Image 4"
+                                    onclick="document.getElementById('fileInput4').click();">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg5" src="" alt="Main Image 5"
+                                    onclick="document.getElementById('fileInput5').click();">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg6" src="" alt="Main Image 6"
+                                    onclick="document.getElementById('fileInput6').click();">
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch flex center align-items-center mt-18">
+                            <input class="form-check-input" type="checkbox" role="switch" id="BestsellerSwitcher">
+                            <label class="form-check-label font-sm" for="BestsellerSwitcher">
+                                Mark as Best Seller <i class="bi bi-lightning-charge-fill"></i>
+                            </label>
+                        </div>
+                        <!-- File inputs to select new images -->
+                        <input type="file" id="fileInput1" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg1')">
+                        <input type="file" id="fileInput2" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg2')">
+                        <input type="file" id="fileInput3" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg3')">
+                        <input type="file" id="fileInput4" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg4')">
+                        <input type="file" id="fileInput5" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg5')">
+                        <input type="file" id="fileInput6" style="display: none;" accept="image/*"
+                            onchange="handleFileChange(event, 'mainimg6')">
+                    </div>
+
+
+
+
+                    <div class="formbold-input-group">
+                        <label for="producttitle" class="formbold-form-label">Product-Title</label>
+                        <input type="text" name="product-title" id="producttitle-2"
+                            placeholder="Enter your product title" class="formbold-form-input shadow" />
+                    </div>
+                    <div class="flex gap-10 prices center">
+                        <div class="formbold-input-group m-LR-2 w-auto">
+                            <label for="brandname" class="formbold-form-label">Brand-Name</label>
+                            <input type="text" name="Brand-Name" id="brandname-2" placeholder="Enter your brand name"
+                                class="formbold-form-input shadow" />
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto">
+                            <label for="productprice" class="formbold-form-label">Price</label>
+                            <input type="text" name="Product-Price" id="productprice-2" placeholder="EGP"
+                                class="formbold-form-input shadow" />
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto">
+                            <label for="sale-amount" class="formbold-form-label">Sale</label>
+                            <input type="text" name="sale-amount" id="sale-amount-2" placeholder="%"
+                                class="formbold-form-input shadow" />
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto ">
+                            <label for="priceplusthecut" class="formbold-form-label"> priceplusthecut</label>
+                            <input type="text" name="priceplusthecut" id="priceplusthecut-2" placeholder="%"
+                                class="formbold-form-input shadow">
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto hidden">
+                            <label for="finalprice" class="formbold-form-label">Price After Sale</label>
+                            <input type="text" id="finalprice-2" placeholder="EGP" class="formbold-form-input shadow"
+                                readonly="">
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto">
+                            <label for="finalprice-2" class="formbold-form-label">Final Price</label>
+                            <input type="text" id="finalprice-2" placeholder="EGP" class="formbold-form-input shadow"
+                                readonly>
+                        </div>
+                        <div class="formbold-input-group m-LR-2 w-auto">
+                            <label for="chart" class="formbold-form-label">Charts</label>
+                            <div class="shadow mb-10">
+                                <select id="size-chart-2" class="formbold-form-input font-sm chart-sel">
+                                    <option value="" disabled="" selected="">Size Charts</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex center align-items gap-20 sm640wrap">
+                        <div class="flex align-items gap-30">
+
+                            <div class="">
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="category" class="formbold-form-label">Category</label>
+                                    <div class="shadow">
+                                        <select name="category" id="category-2"
+                                            class="formbold-form-input s530150 font-sm">
+                                            <option value="men">Men</option>
+                                            <option value="women">Women</option>
+                                            <option value="kids">Kids</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="Piece" class="formbold-form-label">Piece</label>
+                                    <div class="shadow">
+                                        <select name="Piece" id="Piece-2" class="formbold-form-input s530150 font-sm">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="formbold-input-group m-LR-2">
+                                    <label for="Type" class="formbold-form-label">Type</label>
+                                    <div class="shadow">
+                                        <select name="Type" id="Type-2" class="formbold-form-input s530150 font-sm">
+                                            <option value="Top">Top</option>
+                                            <option value="Bottom">Bottom</option>
+                                            <option value="Mix">Mix</option>
+                                            <option value="Footwear">Footwear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="formbold-input-group">
+                            <label for="productdescription" class="formbold-form-label"> Product Description </label>
+                            <textarea rows="9" name="product-description" id="productdescription-2"
+                                placeholder="Type product description here..."
+                                class="formbold-form-input shadow"></textarea>
+                        </div>
+                    </div>
+                    <div class="formbold-input-group">
+                        <div class="flex center align-items shadow p5 mb-20">
+                            <label for="name" class="formbold-form-label" style="margin-bottom:0 !important;">Add
+                                Products</label>
+                            <button type="button" class="formbold-form-label point addbtn no-bg-i:hover line-height"
+                                id="add-more2">
+                                <div class="m2" id="add-more-rotate2">
+                                    <i class="bi bi-plus-lg"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <div id="input-container2"></div>
+                    </div>
+                    <button id="edit-btn" type="button"
+                        class="formbold-btn formbold-sub-btn flex center align-items gap-10" onclick="patchProduct()">
+                        <div id="sub-txt">Edit</div>
+                        <div id="sub-spin" class="spinner hidden"></div>
+                    </button>
+                </div>
+            </form>
+            <form id="delete-product-form" class="hidden deleteProduct">
+                <div class="flex center">
+                    <div class="input-wrapper">
+                        <input type="text" class="formbold-form-input w-300" id="product-id-input-del"
+                            placeholder="Enter item id you will delete">
+                        <button id="sub-btn-del" type="button" onclick="searchProductdel()">
+                            <div id="sub-txt-del">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <div id="sub-spin-del" class="spinner-sm hidden"></div>
+                        </button>
+                    </div>
+                </div>
+                <div id="warning-del" class="flex center warning-txt"></div>
+
+
+                <div id="deleteitem-details" class="hidden">
+                    <div class="flex center">
+                        <button id="del-btn" type="button"
+                            class="formbold-btn formbold-sub-btn flex center align-items .gap-10"
+                            onclick="deleteProduct()">
+                            <div id="sub-txt">Delete</div>
+                            <div id="sub-spin" class="spinner hidden"></div>
+                        </button>
+                    </div>
+                    <div class="formbold-input-group mt-18">
+                        <div class="flex center flex-wrap align-items">
+                            <div class="drop-zone">
+                                <img id="mainimg1-del" src="">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg2-del" src="">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg3-del" src="">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg4-del" src="">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg5-del" src="">
+                            </div>
+                            <div class="drop-zone">
+                                <img id="mainimg6-del" src="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formbold-input-group">
+                        <label for="producttitle" class="formbold-form-label">Product Title</label>
+                        <input type="text" name="product-title" id="producttitle-del" class="formbold-form-input shadow"
+                            disabled />
+                    </div>
+                    <div class="formbold-input-group">
+                        <label for="brandname" class="formbold-form-label">Brand Name</label>
+                        <input type="text" name="Brand-Name" id="brandname-del" class="formbold-form-input shadow"
+                            disabled />
+                    </div>
+                    <div class="formbold-input-group">
+                        <div class="flex center align-items">
+                            <div class="formbold-input-group m-LR-2" style="width: 40%;">
+                                <label for="productprice" class="formbold-form-label">Price</label>
+                                <input type="text" name="Product-Price" id="productprice-del"
+                                    class="formbold-form-input shadow" disabled />
+                            </div>
+                            <div class="formbold-input-group m-LR-2" style="width: 40%;">
+                                <label for="sale-amount" class="formbold-form-label">Sale</label>
+                                <input type="text" name="sale-amount" id="sale-amount-del"
+                                    class="formbold-form-input shadow" disabled />
+                            </div>
+                            <div class="formbold-input-group m-LR-2 hidden" style="width: 40%;">
+                                <label for="finalprice" class="formbold-form-label">Final Price</label>
+                                <input type="text" id="finalprice-del" placeholder="EGP"
+                                    class="formbold-form-input shadow" readonly>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="formbold-input-group">
+                        <div class="flex center align-items">
+
+                            <div class="formbold-input-group m-LR-2" style="width: 40%;">
+                                <label for="category" class="formbold-form-label">Category</label>
+                                <div class="shadow">
+                                    <input type="text" name="category" id="category-del"
+                                        class="formbold-form-input shadow" disabled />
+                                </div>
+                            </div>
+                            <div class="formbold-input-group m-LR-2" style="width: 40%;">
+                                <label for="Piece" class="formbold-form-label">Piece</label>
+                                <div class="shadow">
+                                    <input type="text" name="Piece" id="Piece-del" class="formbold-form-input shadow"
+                                        disabled />
+                                </div>
+                            </div>
+                            <div class="formbold-input-group m-LR-2" style="width: 40%;">
+                                <label for="Type" class="formbold-form-label">Type</label>
+                                <div class="shadow">
+                                    <input type="text" name="Type" id="Type-del" class="formbold-form-input shadow"
+                                        disabled />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="formbold-input-group">
+                        <label for="productdescription" class="formbold-form-label">Product Description</label>
+                        <textarea rows="6" name="product-description" id="productdescription-del"
+                            class="formbold-form-input shadow" disabled></textarea>
+                    </div>
+                    <div class="formbold-input-group">
+                        <div id="input-container-del"></div>
+                    </div>
+
+                </div>
+            </form>
+            <!-- Modal for range duplication -->
+            <div id="rangeDuplicateModal" class="modal">
+                <div class="modal-content p-50">
+                    <span class="close">&times;</span>
+                    <div class="flex column gap-20 align-items">
+                        <h5>Duplicate in Range</h5>
+                        <div class="flex align-flex-start-SQ column gap-10">
+                            <label class="font-sm" for="startSize">Start Size:</label>
+                            <input class="formbold-form-input m-LR-2 max-150 border-15-3px font-sm" type="number"
+                                id="startSize" name="startSize" placeholder="e.g., 36">
+                        </div>
+
+
+                        <div class="flex align-flex-start-SQ column gap-10">
+                            <label class="font-sm" for="endSize">End Size:</label>
+                            <input class="formbold-form-input m-LR-2 max-150 border-15-3px font-sm" type="number"
+                                id="endSize" name="endSize" placeholder="e.g., 43">
+
+                        </div>
+                        <button class="formbold-btn formbold-sub-btn flex center align-items"
+                            id="confirmDuplicateRange">Duplicate</button>
+                    </div>
+
+                </div>
+            </div>
+            <script>
+                function showForm(formId, btnId) {
+                    // Hide all forms
+                    document.getElementById('add-product-form').classList.add('hidden');
+                    document.getElementById('edit-product-form').classList.add('hidden');
+                    document.getElementById('delete-product-form').classList.add('hidden');
+
+                    // Show the selected form
+                    document.getElementById(formId).classList.remove('hidden');
+
+                    // Remove target-ico class from all profile-icon divs
+                    document.querySelectorAll('.profile-icon').forEach(function (div) {
+                        div.classList.remove('target-ico');
+                    });
+
+                    // Add target-ico class to the clicked div
+                    document.getElementById(btnId).classList.add('target-ico');
+                }
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    // Dark & Light toggle
+                    document.querySelector(".day-night").addEventListener("change", () => {
+                        const body = document.querySelector("body");
+                        body.classList.toggle("dark");
+
+                        if (body.classList.contains("dark")) {
+                            setTimeout(() => {
+                                body.classList.toggle("light");
+                                setTimeout(() => body.classList.remove("light"), 10);
+                            }, 5);
+                        }
+
+                        // Toggle input and label styles
+                        const inputs = document.querySelectorAll("input");
+                        const labels = document.querySelectorAll("label");
+
+                        inputs.forEach(input => {
+                            if (body.classList.contains("dark")) {
+                                input.style.color = "#888888";
+                                input.style.borderColor = "#8e8e8e80";
+                            } else {
+                                input.style.color = "";
+                                input.style.borderColor = "";
+                            }
+                        });
+
+                        labels.forEach(label => {
+                            if (body.classList.contains("dark")) {
+                                label.style.color = "#545454";
+                            } else {
+                                label.style.color = "";
+                            }
+                        });
+                    });
+                });
+            </script>
+            <script>
+                function toggleDropdown() {
+                    const dropdown = document.getElementById('dropdown');
+                    dropdown.classList.toggle('active');
+                }
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    // Close dropdown if clicked outside
+                    document.addEventListener('click', function (event) {
+                        const profileIcon = document.querySelector('.profile-icon');
+                        const dropdown = document.getElementById('dropdown');
+                        if (!profileIcon.contains(event.target)) {
+                            dropdown.classList.remove('active');
+                        }
+                    });
+
+
+
+                });
+            </script>
+
+
+            <style>
+                /* Default styles for inputs and labels */
+                input {
+                    color: inherit;
+                    border-color: inherit;
+                }
+
+                label {
+                    color: inherit;
+                }
+
+                /* Styles for dark mode */
+                body.dark input {
+                    color: #888888;
+                    border-color: #8e8e8e80;
+
+
+                }
+
+                body.dark select {
+                    color: #888888;
+                    border-color: #8e8e8e80;
+                    background: black;
+                    ;
+                }
+
+                body.dark label {
+                    color: #545454;
+                    border-color: #8e8e8e80;
+                }
+
+                body.dark textarea {
+                    color: #545454;
+                    border-color: #8e8e8e80;
+                }
+
+                body.dark button {
+                    color: white;
+                    background-color: black;
+                }
+
+                body.dark .formbold-sub-btn {
+                    color: white;
+                    background-color: #6a64f1 !important;
+                }
+
+                body.dark .swal2-container.swal2-center.swal2-backdrop-show div {
+                    background-color: #141414
+                }
+
+                body.dark .swal2-success-ring {
+                    background: none !important;
+                }
+
+                body.dark .swal2-success-circular-line-left {
+                    background-color: inherit !important;
+                }
+
+                body.dark .swal2-success-circular-line-right {
+                    background-color: inherit !important;
+                }
+
+                body.dark .swal2-success-fix {
+                    background-color: inherit !important;
+                }
+            </style>
+
+        </div>
+        </div>
+
+        <!-- Scroll to Top Button -->
+        <button id="scrollTopBtn" title="Scroll To Top" onclick="scrollToTop()"><i
+                class="bi bi-arrow-up-short"></i></button>
+    </main>
+
+    <script src="./js/imageupload.js"></script>
+    <script src="./js/scrollToTop.js"></script>
+    <script src="./js/add-product.js"></script>
+    <script src="./js/edit-product.js"></script>
+    <script src="./js/delete-product.js"></script>
+    <!-- <script src="./js/handling-piece.js"></script> -->
+    <script src="./js/PreviewProduct.js"></script>
+    <script src="./js/change-color-to-img.js"></script>
+    <script>
+        window.addEventListener("beforeunload", function (event) {
+            const inputContainer = document.getElementById("input-container");
+
+            // If inputContainer has content, show the alert
+            if (inputContainer && inputContainer.innerHTML.trim() !== "") {
+                event.preventDefault(); // Prevents the default browser alert
+                event.returnValue = ""; // Required for some browsers
+
+                // Show SweetAlert instead
+                // showCustomReloadAlert();
+                return ""; // Older browser support
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>

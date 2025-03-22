@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="./js/static.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+</head>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+
+<script src="./js/inithialize-firebase.js"></script>
+<script src="./js/checkUserAuthStatus.js"></script>
+<script src="./js/Logout.js"></script>
+
+<body id="top" onload="checkAuthAndRedirect()">
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="mb-20 flex align-items space-between">
+
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+
+            </div>
+            <div class="flex flex-wrap center overflow-y">
+                <section class="overflow border-div-table c8080800a radius-15 width-fit">
+                    <div class="tbl-header">
+                        <table cellpadding="0" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Problem-Description</th>
+                                    <th class="w-300 pl-40">More</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div id="customer-reports" class="tbl-content flex center">
+                        <div id="preloader" class="preloader hidden">
+                            <div class="spinner"></div>
+                        </div>
+
+                        <table cellpadding="0" cellspacing="0">
+                            <tbody id="customerreports-table-body"></tbody>
+                        </table>
+                        <script>
+
+                        </script>
+
+
+                    </div>
+                </section>
+            </div>
+
+
+
+
+
+        </div>
+    </main>
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span id="closeReportModal" class="close">×</span>
+            <h5 class="mb-20 mt-20" id="reportTitle"></h5>
+            <textarea class="formbold-form-input shadow mb-10 border-15-3px" id="reportDescription" readonly rows="10"
+                cols="50"></textarea>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            const profileIcon = document.querySelector('.profile-icon');
+            const dropdown = document.getElementById('dropdown');
+            if (!profileIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableBody = document.getElementById("customerreports-table-body");
+            const preloader = document.getElementById("preloader");
+
+            // Listen for changes in the authentication state
+            firebase.auth().onAuthStateChanged(async function (user) {
+                if (user) {
+                    try {
+                        // User is authenticated, get the ID token
+                        const idToken = await user.getIdToken();
+                        const uid = user.uid;  // Use the authenticated user's UID
+                        const reportsUrl = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/reports.json?auth=${idToken}`;
+
+                        // Fetch reports from Firebase
+                        function fetchReports() {
+                            preloader.classList.remove("hidden");
+
+                            fetch(reportsUrl)
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    tableBody.innerHTML = ""; // Clear existing table data
+                                    preloader.classList.add("hidden");
+
+                                    if (data) {
+                                        Object.keys(data).forEach((key) => {
+                                            const report = data[key];
+                                            const truncatedProblem = report.problemDescription.length > 50
+                                                ? report.problemDescription.substring(0, 50) + "..."
+                                                : report.problemDescription;
+
+                                            const row = document.createElement("tr");
+
+                                            row.innerHTML = `
+                                            <td>${report.customerName}</td>
+                                            <td>${report.phoneNumber}</td>
+                                            <td>${truncatedProblem}</td>
+                                            <td class="textalign w-300">
+                                                <div class="flex">
+                                                    <button class="btn-view formbold-form-label addbtn pointer open-order-btn p-7" data-key="${key}" data-fullproblem="${report.problemDescription}">
+                                                        Show Report <i class="bi bi-plus-circle point"></i>
+                                                    </button>
+                                                    <button class="btn-delete formbold-form-label addbtn pointer open-order-btn p-7" data-key="${key}">
+                                                        Delete Report <i class="bi bi-x-circle pointer"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        `;
+                                            tableBody.appendChild(row);
+                                        });
+
+                                        addEventListeners(); // Add event listeners to buttons
+                                        document.getElementById('customer-reports').classList.remove("flex", "center");
+                                    } else {
+                                        tableBody.innerHTML = "<div class='text-center p-100'>No reports found</div>";
+                                    }
+                                })
+                                .catch((error) => {
+                                    preloader.classList.add("hidden");
+                                    console.error("Error fetching reports:", error);
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Failed to fetch reports. Please try again.',
+                                        icon: 'error',
+                                        showConfirmButton: true
+                                    });
+                                });
+                        }
+
+                        // Add event listeners to buttons
+                        function addEventListeners() {
+                            const viewButtons = document.querySelectorAll(".btn-view");
+                            const deleteButtons = document.querySelectorAll(".btn-delete");
+
+                            viewButtons.forEach((button) => {
+                                button.addEventListener("click", function () {
+                                    const fullProblem = this.getAttribute("data-fullproblem");
+                                    openModal(fullProblem);
+                                });
+                            });
+
+                            deleteButtons.forEach((button) => {
+                                button.addEventListener("click", function () {
+                                    const reportKey = this.getAttribute("data-key");
+                                    deleteReport(reportKey);
+                                });
+                            });
+                        }
+
+                        function openModal(problemDescription) {
+                            // Get the modal elements
+                            const modal = document.getElementById("reportModal");
+                            const modalTitle = document.getElementById("reportTitle");
+                            const modalContent = document.getElementById("reportDescription");
+                            const closeModalBtn = document.getElementById("closeReportModal");
+
+                            // Set content
+                            modalTitle.textContent = "Report Details"; // Change this as needed
+                            modalContent.value = problemDescription;
+
+                            // Show the modal
+                            modal.classList.add("show");
+
+                            // Close the modal when the close button is clicked
+                            closeModalBtn.onclick = function () {
+                                modal.classList.remove("show");
+                            };
+
+                            // Close the modal when clicking outside the modal content
+                            window.onclick = function (event) {
+                                if (event.target === modal) {
+                                    modal.classList.remove("show");
+                                }
+                            };
+                        }
+
+
+                        function deleteReport(key) {
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "Do you want to delete this report?",
+                                icon: "warning",
+                                toast: true,
+                                position: "top-end",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    const deleteUrl = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/reports/${key}.json?auth=${idToken}`;
+
+                                    fetch(deleteUrl, {
+                                        method: "DELETE",
+                                    })
+                                        .then((response) => response.json())
+                                        .then(() => {
+                                            Swal.fire({
+                                                icon: "success",
+                                                title: "Report deleted!",
+                                                toast: true,
+                                                position: "top-end",
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                            });
+                                            fetchReports(); // Refresh the table after deletion
+                                        })
+                                        .catch((error) => {
+                                            console.error("Error deleting report:", error);
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Could not delete the report!",
+                                                toast: true,
+                                                position: "top-end",
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                            });
+                                        });
+                                }
+                            });
+                        }
+
+                        // Load reports on page load
+                        fetchReports();
+                    } catch (error) {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to retrieve reports. Please try again later.',
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                    }
+                } else {
+                    // User is not authenticated, show an error
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'You are not authenticated. Please log in.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                        backdrop: false
+                    });
+                }
+
+            });
+        });
+    </script>
+
+
+
+</body>
+
+</html>

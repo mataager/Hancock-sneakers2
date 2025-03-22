@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="./js/static.js"></script>
+    <script src="./js/inithialize-firebase.js"></script>
+    <script src="./js/checkUserAuthStatus.js"></script>
+    <script src="./js/Logout.js"></script>
+</head>
+
+<body id="top" onload="checkAuthAndRedirect()">
+    <main>
+        <div class="formbold-form-wrapper" style="height: 1000px;">
+            <div class="mb-20 flex align-items space-between">
+
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+
+            </div>
+            <!-- Drop zone for uploading -->
+            <div class="drop-zone" id="dropZoneUpload" onclick="openFilePicker()">
+                <div class="flex flex-column">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <p>Click or Drop Image Here</p>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Drop zone for showing the result -->
+            <div class="drop-zone" id="dropZoneResult">
+                <div class="flex flex-column">
+                    <i class="bi bi-image"></i>
+                    <p>Result will appear here</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        const dropZoneUpload = document.getElementById('dropZoneUpload');
+        const dropZoneResult = document.getElementById('dropZoneResult');
+        const fileInput = document.getElementById('fileInput');
+        const apiKey = 'C0497979-0260-2910-EB18-04B189918362';
+
+        // Open file picker when the drop zone is clicked
+        function openFilePicker() {
+            fileInput.click();
+        }
+
+        // Handle file input change
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                handleFileUpload(fileInput.files[0]);
+            }
+        });
+
+        // Handle drag over event
+        dropZoneUpload.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZoneUpload.classList.add('drag-over');
+        });
+
+        // Handle drag leave event
+        dropZoneUpload.addEventListener('dragleave', () => {
+            dropZoneUpload.classList.remove('drag-over');
+        });
+
+        // Handle drop event
+        dropZoneUpload.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZoneUpload.classList.remove('drag-over');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        // Handle file upload and display result
+        async function handleFileUpload(file) {
+            // Show the uploaded image in the first drop zone
+            const reader = new FileReader();
+            reader.onload = () => {
+                dropZoneUpload.innerHTML = `<img src="${reader.result}" alt="Uploaded Image">`;
+            };
+            reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append('image_file', file);
+            formData.append('get_file', '1');
+
+            dropZoneResult.innerHTML = `<p>Processing image...</p>`;
+
+            try {
+                const response = await fetch('https://api.removal.ai/3.0/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Rm-Token': apiKey,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
+                    throw new Error('Failed to remove background.');
+                }
+
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+
+                // Display the result in the second drop zone
+                dropZoneResult.innerHTML = `<img src="${imageUrl}" alt="Result Image">`;
+            } catch (error) {
+                console.error('Error removing background:', error);
+                dropZoneResult.innerHTML = '<p>Failed to remove background. Please try again.</p>';
+            }
+        }
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>

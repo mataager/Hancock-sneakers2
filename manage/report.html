@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="./js/static.js"></script>
+    <script src="./js/toAll.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+</head>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+
+<script src="./js/inithialize-firebase.js"></script>
+<script src="./js/checkUserAuthStatus.js"></script>
+<script src="./js/Logout.js"></script>
+
+<body id="top" onload="checkAuthAndRedirect()">
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="mb-20 flex align-items space-between">
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+            </div>
+            <div class="flex center flex-wrap">
+                <form class="w-400" id="report-form">
+                    <div class="formbold-input-group">
+                        <label for="uid" class="formbold-form-label">UID</label>
+                        <input type="text" name="uid" id="uid" value="" readonly
+                            class="formbold-form-input shadow border-15-3px">
+                    </div>
+                    <div class="formbold-input-group">
+                        <label for="email" class="formbold-form-label">Your Email</label>
+                        <input type="text" name="email" id="email" value="" readonly
+                            class="formbold-form-input shadow border-15-3px">
+                    </div>
+                    <div class="formbold-input-group">
+                        <label for="reportdescription" class="formbold-form-label">Description</label>
+                        <textarea rows="6" name="report-description" id="report-description"
+                            placeholder="Describe the exact problem you're facing, and we will work on fixing it promptly"
+                            class="formbold-form-input shadow border-15-3px"></textarea>
+                    </div>
+                    <div class="flex flex-end">
+                        <button id="report-submit" type="submit"
+                            class="formbold-btn formbold-sub-btn flex center align-items">
+                            <div id="sub-txt">Submit</div>
+                            <div id="sub-spin" class="spinner-sm hidden"></div>
+                        </button>
+                    </div>
+                </form>
+
+
+            </div>
+
+
+
+
+
+        </div>
+    </main>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            const profileIcon = document.querySelector('.profile-icon');
+            const dropdown = document.getElementById('dropdown');
+            if (!profileIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+    <script>
+        // Retrieve values from localStorage
+        const email = localStorage.getItem('username');
+        const UID = localStorage.getItem('uid');
+
+        // Display them on the page
+        document.getElementById('uid').value = UID;
+        document.getElementById('email').value = email;
+
+        // Listen for form submission
+        document.getElementById('report-form').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            // Get the form data
+            const uid = document.getElementById('uid').value;
+            const email = document.getElementById('email').value;
+            const description = document.getElementById('report-description').value;
+            const reportDateTime = getCurrentDateTime(); // Get current date & time
+
+            // Validation: Check if all fields are filled
+            if (!uid || !email || !description) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Incomplete Form',
+                    text: 'Please fill in all the fields before submitting.',
+                    toast: true,
+                    position: 'top-end', // Show in the top-right corner
+                    timer: 3000, // Auto-close after 3 seconds
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+
+                return; // Stop the submission
+            }
+
+            try {
+                // Get the current user and their ID token
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    throw new Error("No authenticated user found");
+                }
+
+                // Retrieve ID token
+                const idToken = await user.getIdToken();
+
+                // Create the JSON object to send
+                const reportData = {
+                    uid: uid,
+                    name: email,
+                    "problem-description": description,
+                    "report-date": reportDateTime
+                };
+
+                // Show spinner and disable the submit button to prevent multiple submissions
+                document.getElementById('sub-txt').style.display = 'none';
+                document.getElementById('sub-spin').classList.remove('hidden');
+
+                // Send the data to Firebase Realtime Database with the ID token
+                const response = await fetch(`https://matager-f1f00-default-rtdb.firebaseio.com/reports.json?auth=${idToken}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${idToken}`,
+                    },
+                    body: JSON.stringify(reportData)
+                });
+
+                // Handle the response
+                if (response.ok) {
+                    // Show a SweetAlert with no accept button
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Report Submitted',
+                        text: 'Your report has been submitted successfully!',
+                        toast: true,
+                        position: 'top-end', // Show in the top right corner
+                        timer: 2000, // Auto-close after 2 seconds
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        // Reload the page after the toast disappears
+                        location.reload();
+                    });
+
+                } else {
+                    throw new Error('There was an issue submitting your report.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'There was an issue submitting your report. Please try again.',
+                    toast: true,
+                    position: 'top-end', // Show in the top-right corner
+                    timer: 3000, // Auto-close after 3 seconds
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            } finally {
+                // Hide spinner and re-enable the submit button
+                document.getElementById('sub-txt').style.display = 'block';
+                document.getElementById('sub-spin').classList.add('hidden');
+            }
+        });
+    </script>
+
+
+
+</body>
+
+</html>

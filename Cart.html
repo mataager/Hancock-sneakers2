@@ -1,0 +1,837 @@
+<!-- cart -->
+
+<head>
+    <meta charset="UTF-8">
+    <style data-styles="">
+        ion-icon {
+            visibility: hidden
+        }
+
+        .hydrated {
+            visibility: inherit
+        }
+
+        .disabled1 {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .swal2-vertical-buttons .swal2-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="store-title"></title>
+
+    <!-- 
+    - favicon
+  -->
+    <link rel="shortcut icon" href="./favicon.png" type="image/svg+xml">
+
+    <!-- 
+    - custom css link
+  -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- 
+    - google font link
+  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/js/check-auth-user.js"></script>
+    <script src="./assets/js/static.js"></script>
+    <script src="./assets/js/search-product.js"></script>
+    <script src="./assets/js/Check-available.js"></script>
+    <script src="./assets/js/updateshippingfees.js"></script>
+    <script src="./assets/js/getdate.js"></script>
+
+
+
+</head>
+<header class="header" data-header="">
+    <div class="header__bar">Free Shipping On Orders Over <div class="m-x-3" id="free-shipping"></div> EGP</div>
+    <div class="container">
+
+        <div class="overlay" data-overlay=""></div>
+
+        <a href="./index.html" class="logo">
+            <img src="./assets/images/iicon.svg" width="160" height="50" alt="">
+        </a>
+
+        <button class="nav-open-btn" data-nav-open-btn="" aria-label="Open Menu">
+            <ion-icon name="menu-outline" role="img" class="md hydrated" aria-label="menu outline"></ion-icon>
+        </button>
+
+        <nav class="navbar" data-navbar="">
+
+            <button class="nav-close-btn black-font" data-nav-close-btn="" aria-label="Close Menu">
+                <ion-icon name="close-outline" role="img" class="md hydrated" aria-label="close outline"></ion-icon>
+            </button>
+
+            <a href="#" class="logo bg-white">
+                <img src="./assets/images/iicon.svg" width="190" height="50" alt="">
+            </a>
+
+            <ul class="navbar-list">
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('index.html')">Home</a>
+                </li>
+                <!-- <li class="navbar-item">
+                                        <a href="#" class="navbar-link" onclick="changeFrameSrc('About.html')">About</a>
+                                    </li> -->
+                <li class="navbar-item hidden" id="megamenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Products</a>
+                        <!-- <a id="open-category" class="rotate open-category open-category-btn"><i
+                                                    class="bi bi-plus"></i></a> -->
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+
+                    </div>
+                </li>
+                <li class="navbar-item" id="brandsmenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Brands</a>
+                        <a id="open-brands" class="rotate open-category open-category-btn">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+                        <!-- Brand Categories -->
+                        <div class="flex col-u-991">
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/nike-11.svg">
+                                        <a href="#" onclick="brand('Nike')">Nike</a>
+                                    </li>
+                                    <li><img width="20px" src="https://www.svgrepo.com/show/329847/adidas.svg"><a
+                                            href="#" onclick="brand('Adidas')">Adidas</a></li>
+                                    <li><img width="20px"
+                                            src="https://images.seeklogo.com/logo-png/51/1/on-running-logo-png_seeklogo-510256.png"><a
+                                            href="#" onclick="brand('On Cloud')">On Cloud</a></li>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303470/puma-logo-logo.svg"><a href="#"
+                                            onclick="brand('Puma')">Puma</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303555/jordan-air-logo.svg"><a href="#"
+                                            onclick="brand('Jordan')">Jordan</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/asics-6.svg"><a
+                                            href="#" onclick="brand('ASICS')">Asics</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.freelogovectors.net/wp-content/uploads/2023/03/golden-goose-logo-freelogovectors.net_.png"><a
+                                            href="#" onclick="brand('Golden Goose')">Golden Goose</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/new-balance-2.svg"><a href="#"
+                                            onclick="brand('New Balance')">New Balance</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/onitsuka-tiger-1.svg"><a href="#"
+                                            onclick="brand('Onitsuka Tiger')">Onitsuka Tiger</a></li>
+                                    <li><img width="20px"
+                                            src="https://1000marche.net/wp-content/uploads/2021/09/McQ-Alexander-McQueen-Logo.png"><a
+                                            href="#" onclick="brand('McQueen')">McQueen</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/ugg-australia.svg"><a href="#"
+                                            onclick="brand('UGG')">UGG</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/vans-3.svg"><a
+                                            href="#" onclick="brand('Vans')">Vans</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item that contains the mega menu
+                        const navbarItem = document.getElementById('megamenu');
+                        const toggleIcon = document.getElementById('open-category');
+                        const categoryHeaders = document.querySelectorAll('.menu-category h4');
+
+                        // Toggle mega menu display on click for smaller screens
+                        toggleIcon.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleIcon.classList.add('rotate-360');
+                                toggleIcon.classList.remove('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Add click event listeners to all category headers (h4)
+                        categoryHeaders.forEach(header => {
+                            header.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent click from closing the navbar
+                                const category = header.parentElement;
+                                category.classList.toggle('active');
+                            });
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item and the toggle button
+                        const navbarItem = document.getElementById('brandsmenu');
+                        const toggleButton = document.getElementById('open-brands');
+
+                        // Toggle mega menu display on button click
+                        toggleButton.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleButton.classList.add('rotate-360');
+                                toggleButton.classList.remove('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+                </script>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link red-txt" onclick="changeFrameSrc('sale.html')">Sale</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('Contact.html')">Contact</a>
+                </li>
+            </ul>
+            <ul class="nav-action-list">
+
+                <li class="li-action" id="search-li">
+
+
+                </li>
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('Cart.html')">
+                        <ion-icon name="bag-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+                        <data class="nav-action-text">Basket: <strong class="cart-amount" id="cart-amount">0
+                                E£</strong></data>
+                        <data id="cartItemCount" class="nav-action-badge" aria-hidden="true">0</data>
+                    </button>
+                </li>
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('account.html')">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <span class="nav-action-text">Account</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-action-btn hidden">
+                        <ion-icon name="heart-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+
+                        <span class="nav-action-text">Wishlist</span>
+
+                        <data class="nav-action-badge" value="5" aria-hidden="true">5</data>
+                    </button>
+                </li>
+            </ul>
+
+        </nav>
+
+    </div>
+</header>
+<main>
+    <div class="preloader" id="preloader">
+        <img src="favicon.png" alt="Your Image" width="40" height="40">
+        <div class="loader"></div>
+    </div>
+
+    <div class="product-area" id="product-area">
+        <section class="section product p-0 mt-10">
+            <div id="cart-card">
+                <div class="flex center flex-direction-column flex-start m-10" id="Cart">
+                    <div class="m-10 flex center">
+                        <h3>Shopping Cart</h3>
+                    </div>
+                    <div class="m-10 cart-bg  box-with-shadow flex-direction-column flex" id="cartarea">
+                        <div class="flex center">
+                            <div class="over-flow-auto mt-20">
+                                <div class="flex baseline">
+                                    <div class="flex flex-direction-column align-items">
+                                        <h5 class="flex center mb-10">Cart Items</h5>
+                                        <div class="cart-sec">
+                                            <ul class="m-10-0-20-0" id="cart-items">
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="address-sec" id="address-sec">
+                                        <div>
+                                            <div class="mt-20">
+                                                <h5 class="flex center mb-10">Address</h5>
+
+                                                <div class="address-area" style="height: auto;">
+
+                                                    <div class="preloader2" id="preloader2">
+                                                        <div class="loader2"></div>
+                                                    </div>
+                                                    <div class="address-area" id="address-area"></div>
+
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="flex center paymentandtotal">
+                                    <div class="flex center flex-direction-column payment-cart-div mt-20">
+                                        <div class="payment-section">
+                                            <h5>Payment Type</h5>
+                                            <div class="payment-options-container">
+                                                <div class="payment-options">
+                                                    <div class="payment-option selected" id="cod">
+                                                        <img src="./assets/icons/COD.jpg" alt="Cash on Delivery">
+                                                    </div>
+                                                    <div class="payment-option" id="card">
+                                                        <img src="./assets/icons/VISA.svg" alt="Card Payment">
+                                                    </div>
+                                                    <div class="payment-option" id="fawry">
+                                                        <img src="./assets/icons/Fawry.svg" alt="Fawry">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pagination-dots">
+                                                <span class="dot active" data-index="0"></span>
+                                                <span class="dot" data-index="1"></span>
+                                                <span class="dot" data-index="2"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="flex center total-cart-div mt-20">
+                                        <h5 class="pb-30">Summary</h5>
+                                        <div class="flex center align-items font-small mb-10">
+                                            <h5>Cart Total :</h5><span id="cart-total" class="ml-3"></span>
+                                        </div>
+                                        <div class="flex center align-items font-small mb-10">
+                                            <h5>Shipping Fees :</h5><span id="shipping-fees-total" class="ml-3"></span>
+                                            <h5 id="shipping-fees" class="ml-3 hidden"></h5>
+                                        </div>
+                                        <div class="flex center align-items font-small mb-10">
+                                            <h5>Total Price :</h5><span id="total-price" class="ml-3"></span>
+                                        </div>
+                                        <h5 class="hidden" id="total-cart-amount"></h5>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="flex center m-30"><button id="Submit" class="Add-to-Cart"
+                                onclick="submitOrder()">Submit
+                                Order
+                                <i class="bi bi-check2-all"></i>
+                            </button></div>
+
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+                    const cartList = document.getElementById("cart-items");
+                    const cartArea = document.getElementById("cartarea");
+                    let totalAmount = 0;
+
+                    // Function to check availability from Firebase database
+
+                    function checkAvailability(itemId, productSize, productColor, requestedQuantity, callback) {
+                        // Fetch the product data from Firebase database
+                        fetch(`${url}/Stores/${uid}/Products/${itemId}.json`)
+                            .then(response => response.json())
+                            .then(productsData => {
+                                let itemFound = false;
+                                let availableQty = 0;
+
+                                // Loop through the product data to find the correct item
+                                for (const key in productsData.sizes) {
+                                    if (key === productSize) {
+                                        const sizeData = productsData.sizes[key];
+                                        if (sizeData[productColor]) {
+                                            const colorData = sizeData[productColor];
+                                            availableQty = parseInt(colorData.qty, 10); // Get the available quantity
+                                            const colorImage = colorData.img1 || productsData["product-photo"]; // Use color image or fallback to main product photo
+
+                                            itemFound = true;
+
+                                            // Check if the requested quantity is available
+                                            if (requestedQuantity <= availableQty && requestedQuantity > 0) {
+                                                callback(true, availableQty); // Proceed if available
+                                            } else {
+                                                // Insufficient stock, update to the available quantity in local storage
+                                                Swal.fire({
+                                                    icon: "warning",
+                                                    html: `<div style="display: flex; align-items: center; gap: 10px;">
+                                                    <img src="${colorImage}" alt="${productsData["product-title"]}" 
+                                                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
+                                                    <span>Only ${availableQty} items available of this product</span>
+                                                  </div>`,
+                                                }).then(() => {
+                                                    // Update the cart locally to the available quantity
+                                                    updateLocalDbItemQuantity(itemId, availableQty);
+                                                });
+
+                                                callback(false, availableQty); // Insufficient stock, update local DB
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (!itemFound) {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Item Not Found",
+                                        text: "This item is no longer available.",
+                                    });
+                                    callback(false, availableQty); // Item not found
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error checking availability:", error);
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "There was an error checking availability. Please try again later.",
+                                });
+                                callback(false, 0); // Error
+                            });
+                    }
+
+
+                    function checkAndUpdateQuantities() {
+                        cart.forEach((item) => {
+                            checkAvailability(item.id, item.productSize, item.productColor, item.quantity, (isAvailable, availableQty) => {
+                                if (!isAvailable) {
+                                    // If not available, update the local storage item quantity
+                                    updateLocalDbItemQuantity(item.id, availableQty);
+                                }
+                            });
+                        });
+                    }
+
+                    // Function to update quantity in the cart
+                    function updateQuantity(index, increment) {
+                        const item = cart[index];
+
+                        // Determine the requested quantity after increment or decrement
+                        const requestedQuantity = item.quantity + increment;
+
+                        // Ensure the requested quantity is never less than 1
+                        if (requestedQuantity < 1) {
+                            return; // Prevent decrement below 1
+                        }
+
+                        // Check availability based on the updated requested quantity
+                        checkAvailability(item.id, item.productSize, item.productColor, requestedQuantity, (isAvailable, availableQty) => {
+                            if (isAvailable) {
+                                // If the item is available and stock is sufficient, update the cart
+                                item.quantity = requestedQuantity; // Update quantity based on the requested quantity
+                                cart[index] = item;
+
+                                // Update local storage
+                                localStorage.setItem("cart", JSON.stringify(cart));
+
+                                // Update UI
+                                const quantitySpan = document.querySelector(`#qty-${item.id}`);
+                                const priceSpan = document.querySelector(`#price-${item.id}`);
+                                quantitySpan.textContent = `Qty: ${item.quantity}`;
+                                priceSpan.textContent = `${(parseFloat(item.price.replace(" EGP", "")) * item.quantity).toFixed(2)} EGP`;
+
+                                // Refresh total amount
+                                updateTotalAmount();
+                                location.reload(); // Reload to reflect changes
+                            }
+                        });
+
+                    }
+
+                    // Function to update item quantity in local storage
+                    function updateLocalDbItemQuantity(itemId, newQuantity) {
+                        // Find the item in local cart by id and update it
+
+                        const itemIndex = cart.findIndex(item => item.id === itemId);
+                        if (itemIndex !== -1) {
+                            // Check if the new quantity is less than the current quantity
+                            if (newQuantity < cart[itemIndex].quantity) {
+                                // Update the quantity to the new allowed quantity
+                                cart[itemIndex].quantity = newQuantity;
+                            }
+
+                            // Update the cart in local storage
+                            localStorage.setItem("cart", JSON.stringify(cart));
+
+                            // Optionally, update the UI immediately
+                            const quantitySpan = document.querySelector(`#qty-${itemId}`);
+                            const priceSpan = document.querySelector(`#price-${itemId}`);
+                            if (quantitySpan) {
+                                quantitySpan.textContent = `Qty: ${cart[itemIndex].quantity}`;
+                            }
+                            if (priceSpan) {
+                                priceSpan.textContent = `${(parseFloat(cart[itemIndex].price.replace(" EGP", "")) * cart[itemIndex].quantity).toFixed(2)} EGP`;
+                            }
+                        }
+                    }
+                    // Function to update the total amount
+                    // function updateTotalAmount() {
+                    //     totalAmount = cart.reduce((acc, item) => acc + parseFloat(item.price.replace(" EGP", "")) * item.quantity, 0);
+                    //     const totalAmountDiv = document.getElementById("total-cart-amount");
+                    //     if (totalAmountDiv) {
+                    //         totalAmountDiv.innerText = `Total : ${totalAmount.toFixed(2)} EGP`;
+                    //     }
+                    // }
+                    function updateTotalAmount() {
+                        // Calculate total amount from cart array
+                        totalAmount = cart.reduce((acc, item) => {
+                            const itemPrice = parseFloat(item.price.replace(" EGP", "")) || 0;
+                            return acc + itemPrice * item.quantity;
+                        }, 0);
+
+                        // Update `#total-cart-amount` element
+                        const totalAmountDiv = document.getElementById("total-cart-amount");
+                        if (totalAmountDiv) {
+                            totalAmountDiv.innerText = `Total: ${totalAmount.toFixed(2)} EGP`;
+                        }
+
+                        // Update `#cart-total` element
+                        const cartTotalDiv = document.getElementById("cart-total");
+                        if (cartTotalDiv) {
+                            cartTotalDiv.innerText = `${totalAmount.toFixed(2)} EGP`;
+                        }
+                    }
+
+
+                    // Populate cart items
+                    if (cart.length > 0) {
+
+                        cart.forEach((item, index) => {
+                            const listItem = document.createElement("li");
+
+                            // Item details
+                            const itemDetailsDiv = document.createElement("div");
+                            itemDetailsDiv.classList.add("flex", "center", "align-items", "cart-item-sm");
+
+                            // Image
+                            const imageDiv = document.createElement("div");
+                            const itemImage = document.createElement("img");
+                            itemImage.src = item.photourl;
+                            itemImage.classList.add("pointer", "image-cart-sm");
+                            itemImage.onclick = () => productDetails(item.id);
+                            imageDiv.appendChild(itemImage);
+                            itemDetailsDiv.appendChild(imageDiv);
+
+                            // Text
+                            const textDiv = document.createElement("div");
+                            textDiv.classList.add("Product-record");
+                            textDiv.innerHTML = `
+                                                                                        <h5 class="pointer" onclick="brand('${item.brand}')">${item.brand}</h5>
+                                                                                        <p class="cart-font-smaller">${item.title}</p>
+                                                                                        <p>Size: ${item.productSize}</p>
+                                                                                        <p>Color: ${item.productColor}</p>
+                                                                                        <p id="price-${item.id}">${(parseFloat(item.price.replace(" EGP", "")) * item.quantity).toFixed(2)} EGP</p>
+                                                                                        <p id="qty-${item.id}">Qty: ${item.quantity}</p>
+                                                                                    `;
+                            itemDetailsDiv.appendChild(textDiv);
+
+                            // Controls Div to hold Increment, Decrement, and Delete buttons
+                            const controlsDiv = document.createElement("div");
+                            controlsDiv.classList.add("manage-cart-item");
+                            controlsDiv.style.display = "flex";
+                            controlsDiv.style.gap = "10px"; // Add spacing between buttons
+                            controlsDiv.style.alignItems = "center"; // Align buttons vertically
+                            controlsDiv.style.justifyContent = "center"; // Center the buttons in the div
+
+                            // Increment Button
+                            const incrementBtn = document.createElement("i");
+                            incrementBtn.className = "bi-plus-circle i-cart";
+                            incrementBtn.style.cursor = "pointer";
+                            incrementBtn.onclick = () => updateQuantity(index, 1); // Increment quantity
+
+                            // Decrement Button
+                            const decrementBtn = document.createElement("i");
+                            decrementBtn.className = "bi-dash-circle i-cart";
+                            decrementBtn.style.cursor = "pointer";
+                            decrementBtn.onclick = () => updateQuantity(index, -1); // Decrement quantity
+
+                            // Delete Button
+                            const deleteIcon = document.createElement("i");
+                            deleteIcon.className = "bi-bag-dash i-cart";
+                            deleteIcon.style.cursor = "pointer";
+                            deleteIcon.onclick = () => {
+                                cart.splice(index, 1);
+                                localStorage.setItem("cart", JSON.stringify(cart));
+                                listItem.remove();
+                                updateTotalAmount();
+                                window.location.reload();
+                            };
+
+                            // Append all buttons to controlsDiv
+                            controlsDiv.appendChild(decrementBtn);
+                            controlsDiv.appendChild(incrementBtn);
+                            controlsDiv.appendChild(deleteIcon);
+
+                            // Append controlsDiv to itemDetailsDiv
+                            itemDetailsDiv.appendChild(controlsDiv);
+
+                            // Append itemDetailsDiv to listItem
+                            listItem.appendChild(itemDetailsDiv);
+
+                            // Append listItem to cart list
+                            cartList.appendChild(listItem);
+
+                        });
+
+                        // Total Amount
+                        const totalAmountH5 = document.getElementById("total-cart-amount");
+                        totalAmountH5.textContent = `Cart Total : ${totalAmount.toFixed(2)} EGP`;
+
+                        // Initial total amount calculation
+                        updateTotalAmount();
+                    } else {
+                        cartList.innerHTML = `<div class="empty-cart">
+    <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Empty Cart" class="empty-cart-img">
+    <p class="empty-cart-text">Looks like you haven’t added anything yet.</p>
+    <a href="Products.html" class="empty-cart-btn">Start Shopping</a>
+</div>
+
+`;
+
+
+                        cartArea.classList.add("flex", "center", "align-items");
+                    }
+                });
+            </script>
+            <script>
+                // Get elements
+                const paymentOptions = document.querySelectorAll(".payment-option");
+                const dots = document.querySelectorAll(".pagination-dots .dot");
+                const paymentOptionsContainer = document.querySelector(".payment-options");
+
+                let currentIndex = 0;
+
+                // Function to update the displayed payment option
+                function updatePaymentOption(index) {
+                    const offset = -index * 100; // Calculate offset for transform
+                    paymentOptionsContainer.style.transform = `translateX(${offset}%)`;
+                    paymentOptionsContainer.style.transition = "transform 0.3s ease-in-out"; // Smooth transition
+
+                    // Update dots
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle("active", i === index);
+                    });
+                }
+
+                // Add event listeners to dots
+                dots.forEach((dot, index) => {
+                    dot.addEventListener("click", () => {
+                        currentIndex = index;
+                        updatePaymentOption(index);
+                    });
+                });
+
+                // Add event listeners to payment options
+                paymentOptions.forEach((option, index) => {
+                    option.addEventListener("click", () => {
+                        currentIndex = index;
+                        updatePaymentOption(index);
+                    });
+                });
+
+                // Handle touch gestures for scrolling on mobile (iOS and Android)
+                let startX = 0;
+                let currentTranslate = 0;
+                let isDragging = false;
+
+                paymentOptionsContainer.addEventListener("touchstart", (e) => {
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                    paymentOptionsContainer.style.transition = "none"; // Disable transition during drag
+                });
+
+                paymentOptionsContainer.addEventListener("touchmove", (e) => {
+                    if (!isDragging) return;
+                    const deltaX = e.touches[0].clientX - startX;
+                    const width = paymentOptionsContainer.offsetWidth;
+                    const percentMoved = deltaX / width;
+                    currentTranslate = -(currentIndex * 100) + percentMoved * 100;
+                    paymentOptionsContainer.style.transform = `translateX(${currentTranslate}%)`;
+                });
+
+                paymentOptionsContainer.addEventListener("touchend", (e) => {
+                    isDragging = false;
+                    const width = paymentOptionsContainer.offsetWidth;
+                    const deltaX = e.changedTouches[0].clientX - startX;
+                    const threshold = width / 4; // Minimum distance to trigger a swipe
+
+                    if (Math.abs(deltaX) > threshold) {
+                        if (deltaX > 0 && currentIndex > 0) {
+                            // Swipe right
+                            currentIndex--;
+                        } else if (deltaX < 0 && currentIndex < paymentOptions.length - 1) {
+                            // Swipe left
+                            currentIndex++;
+                        }
+                    }
+                    updatePaymentOption(currentIndex);
+                });
+
+                // Add support for mouse drag (optional for desktop browsers)
+                let isMouseDragging = false;
+                let mouseStartX = 0;
+
+                paymentOptionsContainer.addEventListener("mousedown", (e) => {
+                    mouseStartX = e.clientX;
+                    isMouseDragging = true;
+                    paymentOptionsContainer.style.transition = "none";
+                });
+
+                paymentOptionsContainer.addEventListener("mousemove", (e) => {
+                    if (!isMouseDragging) return;
+                    const deltaX = e.clientX - mouseStartX;
+                    const width = paymentOptionsContainer.offsetWidth;
+                    const percentMoved = deltaX / width;
+                    currentTranslate = -(currentIndex * 100) + percentMoved * 100;
+                    paymentOptionsContainer.style.transform = `translateX(${currentTranslate}%)`;
+                });
+
+                paymentOptionsContainer.addEventListener("mouseup", (e) => {
+                    isMouseDragging = false;
+                    const width = paymentOptionsContainer.offsetWidth;
+                    const deltaX = e.clientX - mouseStartX;
+                    const threshold = width / 4;
+
+                    if (Math.abs(deltaX) > threshold) {
+                        if (deltaX > 0 && currentIndex > 0) {
+                            currentIndex--;
+                        } else if (deltaX < 0 && currentIndex < paymentOptions.length - 1) {
+                            currentIndex++;
+                        }
+                    }
+                    updatePaymentOption(currentIndex);
+                });
+
+                paymentOptionsContainer.addEventListener("mouseleave", () => {
+                    isMouseDragging = false;
+                });
+
+                // Initialize with the first payment option
+                updatePaymentOption(currentIndex);
+            </script>
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+            <script src="./assets/js/submit-order.js"></script>
+
+
+        </section>
+
+    </div>
+
+    <div class="flex center">
+        <a href="https://matager.online" target="_blank">
+            <img src="./assets/images/powerd by matager black.svg" width="100px">
+        </a>
+    </div>
+
+
+
+    </section>
+
+
+
+    </div>
+</main>
+
+<a href="#top" class="go-top-btn" data-go-top="">
+    <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
+</a>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function showPreloader() {
+        document.getElementById('preloader').classList.remove('hidden');
+
+
+    }
+
+    // Function to hide preloader
+    function hidePreloader() {
+        document.getElementById('preloader').classList.add('hidden');
+
+
+    }
+
+    // Fetch product details after 2 seconds
+    setTimeout(() => {
+
+        hidePreloader(); // Hide preloader after 2 seconds
+        // Fetch product details
+    }, 1000);
+</script>
+<script src="./assets/js/update-cart-amont.js"></script>
+<script src="./assets/js/route.js"></script>
+<script src="./assets/js/all.js"></script>
+<script src="./assets/js/rendering-megamenu.js"></script>
+<script src="./assets/js/rendering-search.js"></script>
+<script src="./assets/js/cart.js"></script>

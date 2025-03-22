@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="./js/static.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+    <style>
+        .card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Ensuring action-buttons are in the same position across all cards */
+        .action-buttons {
+            position: absolute;
+            top: 20px;
+            /* Adjusted for better alignment */
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            /* Initially hidden above h5 */
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Smoothly show buttons when hovering */
+        .card:hover .action-buttons {
+            transform: translateX(-50%) translateY(10px);
+            /* Moves below h5 */
+            opacity: 1;
+        }
+
+        /* Styling buttons */
+        .edit-btn,
+        .delete-btn,
+        .save-btn {
+            background-color: rgb(14, 13, 24);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: #fac980;
+            color: #0a0914;
+        }
+
+        .delete-btn:hover {
+            background-color: #ff4444;
+            color: #0a0914;
+        }
+
+        .save-btn:hover {
+            background-color: #f78282;
+            color: #0a0914;
+        }
+    </style>
+</head>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+
+<script src="./js/inithialize-firebase.js"></script>
+<script src="./js/checkUserAuthStatus.js"></script>
+<script src="./js/Logout.js"></script>
+
+<body id="top" onload="checkAuthAndRedirect()">
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="mb-20 flex align-items space-between">
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+            </div>
+            <div class="flex center flex-wrap">
+                <div class="flex flex-wrap center">
+                    <div class="card mb-20 height-max-content padding-15 ">
+
+                        <h3 class="mb-10">Total Products</h3>
+                        <p class="break-word" id="Total-Products"></p>
+                        <div class="shine"></div>
+
+                    </div>
+                </div>
+                <div class="flex flex-wrap center">
+                    <div class="card mb-20 height-max-content padding-15 ">
+
+                        <h3 class="mb-10">Shop Email</h3>
+                        <p class="break-word" id="shop-Email"></p>
+                        <div class="shine"></div>
+
+                    </div>
+                </div>
+                <div class="flex flex-wrap center">
+                    <div class="card mb-20 height-max-content padding-15">
+
+                        <h3 class="mb-10">Shop Numbers</h3>
+                        <p class="break-word" id="shop-Numbers"></p>
+                        <p class="break-word" id="shop-Numbers"></p>
+                        <div class="shine"></div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="flex flex-wrap center">
+                <div class="card mb-20 width-70-perc padding-15 panner-img">
+                    <div class="flex center absolute ">
+                        <h5 class="mb-10 flex center">Shop Panner</h5>
+                        <div class="action-buttons">
+                            <button class="edit-btn" title="change image"><i class="bi bi-cloud-plus-fill"></i></button>
+                            <button class="delete-btn" title="save changes"><i
+                                    class="bi bi-cloud-check-fill"></i></button>
+
+
+                        </div>
+                    </div>
+
+
+                    <img class="shop-panner-img">
+
+                    <input type="file" class="file-input" accept="image/*" hidden>
+                </div>
+            </div>
+            <div class="flex flex-wrap center">
+                <div class="card mb-20 padding-15 newarrival-img" style="width: 30%;">
+                    <div class="flex center absolute">
+                        <h5 class="mb-10 flex center">new arrival</h5>
+                        <div class="action-buttons">
+                            <button class="edit-btn" title="change image"><i class="bi bi-cloud-plus-fill"></i></button>
+                            <button class="delete-btn"><i class="bi bi-cloud-check-fill"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card mb-20 padding-15 sale-img" style="width: 30%;">
+                    <div class="flex center absolute">
+                        <h5 class="mb-10 flex center">Sale</h5>
+                        <div class="action-buttons">
+                            <button class="edit-btn" title="change image"><i class="bi bi-cloud-plus-fill"></i></button>
+                            <button class="delete-btn"><i class="bi bi-cloud-check-fill"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <script> document.querySelectorAll(".card").forEach((card) => {
+                    const editBtn = card.querySelector(".edit-btn");
+                    const deleteBtn = card.querySelector(".delete-btn");
+                    let fileInput = card.querySelector(".file-input");
+
+                    // If no file input exists, create it dynamically
+                    if (!fileInput) {
+                        fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = "image/*";
+                        fileInput.hidden = true;
+                        card.appendChild(fileInput);
+                    }
+
+                    if (editBtn && fileInput) {
+                        // Edit button opens file picker
+                        editBtn.addEventListener("click", () => {
+                            fileInput.click();
+                        });
+
+                        // When file is selected, update the background
+                        fileInput.addEventListener("change", (event) => {
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    card.style.backgroundImage = `url(${e.target.result})`;
+                                    card.style.backgroundSize = "cover";
+                                    card.style.backgroundPosition = "center";
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+
+                    if (deleteBtn) {
+                        // Delete button resets background
+                        deleteBtn.addEventListener("click", () => {
+                            card.style.backgroundImage = "";
+                        });
+                    }
+                });</script>
+
+
+
+        </div>
+    </main>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            const profileIcon = document.querySelector('.profile-icon');
+            const dropdown = document.getElementById('dropdown');
+            if (!profileIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,607 @@
+<head>
+    <meta charset="UTF-8">
+    <style data-styles="">
+        ion-icon {
+            visibility: hidden
+        }
+
+        .hydrated {
+            visibility: inherit
+        }
+    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="store-title"></title>
+
+    <!-- 
+    - favicon
+  -->
+    <link rel="shortcut icon" href="./favicon.png" type="image/svg+xml">
+
+    <!-- 
+    - custom css link
+  -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- 
+    - google font link
+  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="./assets/js/static.js"></script>
+    <script src="./assets/js/search-product.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<header class="header" data-header="">
+
+    <div class="header__bar">Free Shipping On Orders Over <div class="m-x-3" id="free-shipping"></div> EGP</div>
+    <div class="container">
+
+        <div class="overlay" data-overlay=""></div>
+
+        <a href="./index.html" class="logo">
+            <img src="./assets/images/iicon.svg" width="160" height="50" alt="">
+        </a>
+
+        <button class="nav-open-btn" data-nav-open-btn="" aria-label="Open Menu">
+            <ion-icon name="menu-outline" role="img" class="md hydrated" aria-label="menu outline"></ion-icon>
+        </button>
+
+        <nav class="navbar" data-navbar="">
+
+            <button class="nav-close-btn black-font" data-nav-close-btn="" aria-label="Close Menu">
+                <ion-icon name="close-outline" role="img" class="md hydrated" aria-label="close outline"></ion-icon>
+            </button>
+
+            <a href="#" class="logo bg-white">
+                <img src="./assets/images/iicon.svg" width="190" height="50" alt="">
+            </a>
+
+            <ul class="navbar-list">
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('index.html')">Home</a>
+                </li>
+                <!-- <li class="navbar-item">
+                                        <a href="#" class="navbar-link" onclick="changeFrameSrc('About.html')">About</a>
+                                    </li> -->
+                <li class="navbar-item hidden" id="megamenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Products</a>
+                        <!-- <a id="open-category" class="rotate open-category open-category-btn"><i
+                                                    class="bi bi-plus"></i></a> -->
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+
+                    </div>
+                </li>
+                <li class="navbar-item" id="brandsmenu" data-mega-menu>
+                    <div class="flex align-items justify-content-space-between">
+                        <a href="#" class="navbar-link" onclick="changeFrameSrc('Products.html')">Brands</a>
+                        <a id="open-brands" class="rotate open-category open-category-btn">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </div>
+                    <div class="mega-menu flex-direction-column" id="mega-menu">
+                        <!-- Brand Categories -->
+                        <div class="flex col-u-991">
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/nike-11.svg">
+                                        <a href="#" onclick="brand('Nike')">Nike</a>
+                                    </li>
+                                    <li><img width="20px" src="https://www.svgrepo.com/show/329847/adidas.svg"><a
+                                            href="#" onclick="brand('Adidas')">Adidas</a></li>
+                                    <li><img width="20px"
+                                            src="https://images.seeklogo.com/logo-png/51/1/on-running-logo-png_seeklogo-510256.png"><a
+                                            href="#" onclick="brand('On Cloud')">On Cloud</a></li>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303470/puma-logo-logo.svg"><a href="#"
+                                            onclick="brand('Puma')">Puma</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://www.svgrepo.com/show/303555/jordan-air-logo.svg"><a href="#"
+                                            onclick="brand('Jordan')">Jordan</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/asics-6.svg"><a
+                                            href="#" onclick="brand('ASICS')">Asics</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.freelogovectors.net/wp-content/uploads/2023/03/golden-goose-logo-freelogovectors.net_.png"><a
+                                            href="#" onclick="brand('Golden Goose')">Golden Goose</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/new-balance-2.svg"><a href="#"
+                                            onclick="brand('New Balance')">New Balance</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu-category">
+                                <ul>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/onitsuka-tiger-1.svg"><a href="#"
+                                            onclick="brand('Onitsuka Tiger')">Onitsuka Tiger</a></li>
+                                    <li><img width="20px"
+                                            src="https://1000marche.net/wp-content/uploads/2021/09/McQ-Alexander-McQueen-Logo.png"><a
+                                            href="#" onclick="brand('McQueen')">McQueen</a></li>
+                                    <li><img width="20px"
+                                            src="https://cdn.worldvectorlogo.com/logos/ugg-australia.svg"><a href="#"
+                                            onclick="brand('UGG')">UGG</a></li>
+                                    <li><img width="20px" src="https://cdn.worldvectorlogo.com/logos/vans-3.svg"><a
+                                            href="#" onclick="brand('Vans')">Vans</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item that contains the mega menu
+                        const navbarItem = document.getElementById('megamenu');
+                        const toggleIcon = document.getElementById('open-category');
+                        const categoryHeaders = document.querySelectorAll('.menu-category h4');
+
+                        // Toggle mega menu display on click for smaller screens
+                        toggleIcon.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleIcon.classList.add('rotate-360');
+                                toggleIcon.classList.remove('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Add click event listeners to all category headers (h4)
+                        categoryHeaders.forEach(header => {
+                            header.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent click from closing the navbar
+                                const category = header.parentElement;
+                                category.classList.toggle('active');
+                            });
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleIcon.classList.remove('rotate-360');
+                                toggleIcon.classList.add('rotate-back');
+                                toggleIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // Select the navbar item and the toggle button
+                        const navbarItem = document.getElementById('brandsmenu');
+                        const toggleButton = document.getElementById('open-brands');
+
+                        // Toggle mega menu display on button click
+                        toggleButton.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent triggering other click events
+                            navbarItem.classList.toggle('active');
+
+                            // Toggle icon rotation and change icon class
+                            if (navbarItem.classList.contains('active')) {
+                                toggleButton.classList.add('rotate-360');
+                                toggleButton.classList.remove('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-dash"></i>';
+                            } else {
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+
+                        // Close mega menu when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!navbarItem.contains(e.target)) {
+                                navbarItem.classList.remove('active');
+                                toggleButton.classList.remove('rotate-360');
+                                toggleButton.classList.add('rotate-back');
+                                toggleButton.innerHTML = '<i class="bi bi-plus"></i>';
+                            }
+                        });
+                    });
+                </script>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link red-txt" onclick="changeFrameSrc('sale.html')">Sale</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link" onclick="changeFrameSrc('Contact.html')">Contact</a>
+                </li>
+            </ul>
+            <ul class="nav-action-list">
+
+                <li class="li-action" id="search-li">
+
+
+                </li>
+
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('Cart.html')">
+                        <ion-icon name="bag-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+                        <data class="nav-action-text">Basket: <strong class="cart-amount" id="cart-amount">0
+                                E£</strong></data>
+                        <data id="cartItemCount" class="nav-action-badge" aria-hidden="true">0</data>
+                    </button>
+                </li>
+
+                <li class="navbar-item li-action">
+                    <button class="nav-action-btn" onclick="changeFrameSrc('account.html')">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <span class="nav-action-text">Account</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-action-btn hidden">
+                        <ion-icon name="heart-outline" aria-hidden="true" role="img" class="md hydrated"></ion-icon>
+
+                        <span class="nav-action-text">Wishlist</span>
+
+                        <data class="nav-action-badge" value="5" aria-hidden="true">5</data>
+                    </button>
+                </li>
+            </ul>
+
+        </nav>
+
+    </div>
+</header>
+
+<body>
+    <div class="preloader" id="preloader">
+        <img src="favicon.png" alt="Your Image" width="40" height="40">
+        <div class="loader"></div>
+    </div>
+
+    <div class="flex flex-direction-column align-items">
+        <div class="flex align-items justify-content-space-between">
+            <div class="flex align-items section-title">
+                <h5 class="grey pointer" onclick="changeFrameSrc('index.html')">Home</h5>/
+                <h5>Account</h5>
+            </div>
+        </div>
+
+        <div class="mt-20 hidden">
+            <button id="google-signin-btn">
+                <div class="flex align-items google-signin-btn p-10">
+                    <i class="sign-txt bi bi-google mr-5"></i>
+                    <div class="sign-txt">
+                        Sign in with Google
+                    </div>
+                </div>
+            </button>
+        </div>
+        <div id="sign-in-by-matager"
+            class="mt-10-percent flex align-items flex-direction-column text-center gap-10 p-10">
+            <img width="50px" src="./assets/images/matager-bag.svg">
+            <h5 class="align-txt">Sign in/up with Your Matager Account</h5>
+            <p class="flex flex-wrap center font-small align-txt">
+                Want to know the advantages of a <a href="https://matager.online/docs" target="_blank"
+                    class="link m-x-3">Matager
+                    account</a>?
+            </p>
+            <div>
+                <button id="email-signin-btn" onclick="emailPasswordSignIn()">
+                    <div class="flex align-items google-signin-btn p-5-10">
+                        <div class="sign-txt mr-5">
+                            sign in
+                        </div>
+                        <i class="fa-solid fa-right-to-bracket sign-txt"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+
+
+
+        <div id="user-info" style="display: none;" class="user-dashboard">
+            <div class="user-header">
+                <div class="flex align-items">
+                    <button id="savechanges" class="save-changes-btn hidden" title="save changes">
+                        save changes
+                    </button>
+                    <div id="save-btn-preloader" class="save-btn-preloader hidden"></div>
+                </div>
+
+                <div class="user-info flex">
+                    <img class="user-pp" id="user-photo" src="" alt="https://i.imgur.com/Zaneuop.png"
+                        onclick="openImageOptions()">
+                    <div class="user-details">
+                        <h4 id="user-name"></h4>
+                        <p class="flex" id="user-email"></p>
+                    </div>
+                </div>
+                <button class="logout-btn" title="Logout" id="signout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+
+                <div id="image-options-modal" class="modal" onclick="closeModalOnOutsideClick(event)">
+                    <div class="modal-content min-content-xy ">
+                        <button type="button"
+                            style="color: white;background: black;right:-1;top:-1;position: absolute;border-radius: 0px 8px 0px 8px;margin: 0;padding: 5px;"
+                            onclick="closeModal()">
+                            <i class="bi bi-x"></i>
+                        </button>
+                        <button class="pp-option-btn w-max" onclick="triggerFileInput()">Upload from Gallery <i
+                                class="bi bi-cloud-upload m-x-3"></i></button>
+                        <div class="flex flex-direction-column align-items">
+                            <button class="pp-option-btn w-max" onclick="showAvatars()">Use Avatar<i
+                                    class="fa-solid fa-user-astronaut m-x-3"></i></button>
+                            <div id="avatarContainer" class="hidden">
+                                <div id="avatarCarousel" class="avatar-carousel">
+                                    <!-- Avatar images will be dynamically loaded here -->
+                                </div>
+
+                            </div>
+                            <button id="selectAvatarButton" class="pp-option-btn w-max hidden"
+                                onclick="confirmAvatar()">Confirm
+                                Selection</button>
+                        </div>
+
+
+                        <div class="flex"> <button class="pp-option-btn w-max" onclick="showImageURLInput()">Use Image
+                                URL <i class="bi bi-link-45deg m-x-3"></i></button>
+                            <button class="pp-option-btn w-max" id="upload-img-url"
+                                onclick="updateProfilePictureFromURL(event)" style="display: none;margin: 10px 0px;"><i
+                                    class="bi bi-cloud-upload"></i></button>
+                        </div>
+
+
+
+                        <div id="url-input-container" style="display: none;">
+                            <input type="text" class="photo-pic-url" id="image-url-input" placeholder="Enter Image URL"
+                                onchange="updateProfilePictureFromURL(event)" />
+                        </div>
+
+                        <div class="flex center">
+                            <p id="image-error" class="hidden font-error"></p>
+                        </div>
+                    </div>
+
+                    <input type="file" id="file-input" style="display: none;" onchange="updateProfilePicture(event)"
+                        accept="image/*" />
+                    <!-- Assuming this is the input for file selection -->
+                    <input type="file" id="profile-picture-input" style="display: none;"
+                        onchange="updateProfilePicture(event)" accept="image/*" />
+
+                </div>
+
+            </div>
+            <div class="user-navigation">
+                <ul class="nav-tabs">
+                    <li class="nav-tab active" onclick="showSection('order-history')">Order History</li>
+                    <li class="nav-tab" onclick="showSection('account-settings')">Account Settings</li>
+                    <li class="nav-tab" onclick="showSection('favourite-items')">Favourite Items</li>
+                </ul>
+            </div>
+            <div class="content-section" id="order-history">
+                <!-- Search bar for Order ID -->
+                <div class="order-search">
+                    <input type="text" id="search-order" placeholder="Search by Order ID">
+                </div>
+                <div class="order-history-grid">
+                </div>
+            </div>
+
+            <div class="content-section  hidden" id="account-settings">
+                <div class="account-section">
+                    <div class="flex align-items justify-content-space-between mb-10">
+                        <h5>Personal Information</h5>
+                        <div class="flex flex-direction-column align-items-flex-end ">
+                            <button class="edit-button mb-10" onclick="editPersonalInfo()"><i
+                                    class="bi bi-pencil-square"></i></button>
+
+                            <button class="edit-button hidden" id="savepersonalinfochanges"
+                                onclick="savepersonalinfochanges()">
+                                save changes</button>
+
+                        </div>
+                    </div>
+                    <div class="details-row">
+                        <div class="detail-group">
+                            <h6>UID</h6>
+                            <p id="UID"></p>
+                        </div>
+                    </div>
+                    <div class="details-row">
+                        <div class="detail-group">
+                            <h6>Email Address</h6>
+                            <p id="email-address"></p>
+                        </div>
+                        <div class="detail-group">
+                            <h6>Role</h6>
+                            <p id="role"></p>
+                        </div>
+                    </div>
+                    <div class="details-row">
+                        <div class="detail-group">
+                            <h6>First Name</h6>
+                            <p id="first-name"></p>
+                        </div>
+                        <div class="detail-group">
+                            <h6>Last Name</h6>
+                            <p id="last-name"></p>
+                        </div>
+                    </div>
+
+                    <div class="details-row">
+
+                        <div class="detail-group">
+                            <h6>Phone</h6>
+                            <p id="phone-number"></p>
+                        </div>
+                        <div class="detail-group">
+                            <h6>Phone-2</h6>
+                            <p id="phone-number2"></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h3 class="mt-50 mb-10 flex center">Address Information</h3>
+
+                <div class="flex align-items center mb-10">
+                    <button class="edit-button" onclick="AddAddress()"><i class="bi bi-plus-circle"></i>
+                        Add Address</button>
+                </div>
+                <div class="addresses-container">
+
+                    <!-- address append here -->
+                </div>
+            </div>
+            <script src="./assets/js/account.js"></script>
+
+            <div class="content-section flex flex-wrap gap-20 hidden" id="favourite-items">
+
+
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            function showSection(sectionId) {
+                const sections = document.querySelectorAll('.content-section');
+                const tabs = document.querySelectorAll('.nav-tab');
+
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                document.getElementById(sectionId).classList.remove('hidden');
+                document.querySelector(`.nav-tab[onclick="showSection('${sectionId}')"]`).classList.add('active');
+            }
+
+            // jQuery for searching orders by Order ID
+            // $(document).ready(function () {
+            //     $('#search-order').on('keyup', function () {
+            //         const searchValue = $(this).val().toLowerCase();
+            //         let matchFound = false; // Flag to track if any order matches
+
+            //         $('.order-card').each(function () {
+            //             const orderId = $(this).find('.order-header h5').text().toLowerCase();
+            //             if (orderId.includes(searchValue)) {
+            //                 $(this).show();
+            //                 matchFound = true; // Match found
+            //             } else {
+            //                 $(this).hide();
+            //             }
+            //         });
+
+            //         // Check if any orders matched and handle the "no order found" message
+            //         if (!matchFound) {
+            //             if ($('#no-orders-found').length === 0) {
+            //                 // Append "no order found" message if it doesn't already exist
+            //                 $('.order-history-grid').append('<div id="no-orders-found" class="no-orders-message">No orders with this ID</div>');
+            //             }
+            //         } else {
+            //             // Remove the "no order found" message if any order matches
+            //             $('#no-orders-found').remove();
+            //         }
+            //     });
+            // });
+            $(document).ready(function () {
+                // Handle the search functionality on keyup
+                $('#search-order').on('keyup', function () {
+                    const searchValue = $(this).val().toLowerCase();
+                    let matchFound = false; // Flag to track if any order matches
+
+                    $('.order-card').each(function () {
+                        const orderId = $(this).find('.order-header h5').text().toLowerCase();
+                        if (orderId.includes(searchValue)) {
+                            $(this).show();
+                            matchFound = true; // Match found
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+
+                    // Handle the "no order found" message
+                    if (!matchFound) {
+                        if ($('#no-orders-found').length === 0) {
+                            $('.order-history-grid').append('<div id="no-orders-found" class="no-orders-message">No orders with this ID</div>');
+                        }
+                    } else {
+                        $('#no-orders-found').remove();
+                    }
+                });
+
+                // Trigger search if there is already input in the field when the page loads
+                const initialValue = $('#search-order').val();
+                if (initialValue) {
+                    $('#search-order').trigger('keyup');
+                }
+            });
+
+        </script>
+
+
+
+
+
+
+    </div>
+    <div class="flex center end-page" id="powerd-by-matager">
+        <a href="https://matager.online" target="_blank">
+            <img src="./assets/images/powerd by matager black.svg" width="100px">
+        </a>
+    </div>
+</body>
+
+<a href="#top" class="go-top-btn" data-go-top="">
+    <ion-icon name="arrow-up-outline" role="img" class="md hydrated" aria-label="arrow up outline"></ion-icon>
+</a>
+<!-- 
+    - custom js link
+  -->
+
+
+<!-- //ionicon link -->
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script>
+
+    const goTopBtn = document.querySelector("[data-go-top]");
+
+    window.addEventListener("scroll", function () {
+        if (window.scrollY >= 80) {
+
+            goTopBtn.classList.add("active");
+        } else {
+
+            goTopBtn.classList.remove("active");
+        }
+    });
+
+</script>
+<script src="./assets/js/google-auth.js"></script>
+<script src="./assets/js/email&password-signin.js"></script>
+<script src="./assets/js/update-cart-amont.js"></script>
+<script src="./assets/js/route.js"></script>
+<script src="./assets/js/all.js"></script>
+<script src="./assets/js/rendering-megamenu.js"></script>
+<script src="./assets/js/rendering-search.js"></script>

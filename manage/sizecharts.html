@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" class="hydrated">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link href="./favicon.png" rel="icon" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="./js/toAll.js"></script>
+    <script src="./js/static.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/alll.css">
+
+</head>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+
+<script src="./js/inithialize-firebase.js"></script>
+<script src="./js/checkUserAuthStatus.js"></script>
+<script src="./js/Logout.js"></script>
+
+<body id="top" onload="checkAuthAndRedirect()">
+    <main>
+        <div class="formbold-form-wrapper">
+            <div class="mb-20 flex align-items space-between">
+                <div class="profile-icon profile-icon-img" onclick="toggleDropdown()">
+                    <!-- <span><i class="bi bi-diagram-3"></i></span> -->
+                    <div id="dropdown" class="dropdown-menu">
+                        <a href="./main.html" class="center align-items"><i class="bi bi-house-door mr-5"></i> Home
+                        </a>
+                        <a href="./profile.html" class="center align-items"><i class="bi bi-person-circle mr-5"></i>
+                            Profile</a>
+                        <a href="#settings" class="center align-items"><i class="bi bi-gear-fill mr-5"></i> Settings</a>
+                        <a href="#logout" id="logoutLink" class="center align-items"><i
+                                class="bi bi-box-arrow-left mr-5"></i>
+                            Logout</a>
+                    </div>
+                </div>
+                <div>
+                    <label class="day-night">
+                        <input type="checkbox" checked />
+                        <div></div>
+                    </label>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="flex flex-wrap align-items flex-column">
+                <div class="card2 mb-20 padding-15">
+                    <h3 class="flex align-items gap-30" style="justify-content: space-between;">
+                        <span style="margin: 0 auto; left: -50%;">Size Charts</span>
+                        <button class="add-icon-btn">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </h3>
+
+
+                </div>
+                <div class="m-50 flex center txt-center hidden" id="nosizecharts">
+                    <h5>there is no size chart click on the add icon <i class="bi bi-plus-lg"></i> to add more</h5>
+                </div>
+                <div class="flex center txt-center flex-wrap hidden" id="sizecharts">
+
+                </div>
+                <div id="preloader" class="preloader hiden">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </main>
+    <div id="sizeChartModal" class="modal">
+        <div class="modal-content">
+            <div>
+
+                <h3 class="mb-10 flex align-items" style="justify-content: space-between;">
+                    <span style="margin: 0 auto; left: -50%;">Upload Size Chart</span>
+                    <span class="close" onclick="closeModal()">×</span>
+                </h3>
+            </div>
+            <form id="sizeChartForm" class="flex center column align-items gap-20">
+                <div class="drop-zone" style="width: auto !important;" id="dropZone2_1"
+                    ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(event, this)"
+                    ondrop="handleDrop(event, this)">
+                    <div class="flex flex-column">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <span>Click Or Drop Chart Image Here</span>
+                        <input type="file" id="sizeChartFile" accept="image/*" required hidden />
+                    </div>
+                </div>
+                <div class="flex flex-column gap-20">
+                    <input type="text" name="" id="chartName" placeholder="Enter a chart name"
+                        class="formbold-form-input shadow border-15-3px w-auto hidden">
+
+
+                    <button type="submit" class="formbold-btn flex center align-items upload-chart-btn">
+                        <div id="sub-txt" class="flex align-items gap-3">Upload <i class="bi bi-cloud-upload"></i></div>
+                        <div id="sub-spin" class="spinner-sm hidden">
+                        </div>
+                </div>
+                </button>
+
+            </form>
+        </div>
+    </div>
+    <!-- Modal Structure -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <img id="chartImage" width="100%" src="" alt="Size Chart" class="modal-image mt-20">
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            const profileIcon = document.querySelector('.profile-icon');
+            const dropdown = document.getElementById('dropdown');
+            if (!profileIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        const sizeChartModal = document.getElementById("sizeChartModal");
+        const sizeChartFileInput = document.getElementById("sizeChartFile");
+        const sizeChartForm = document.getElementById("sizeChartForm");
+        const uploadButton = document.querySelector(".upload-chart-btn");
+        const chartNameInput = document.getElementById("chartName"); // New input for chart name
+        const preloader = document.getElementById("preloader");
+
+        // Initially disable upload button
+        uploadButton.disabled = true;
+        uploadButton.classList.add("hidden");
+        // Open the modal
+        document.querySelector(".add-icon-btn").addEventListener("click", () => {
+            sizeChartModal.classList.add("show");
+        });
+        // Close the modal
+        function closeModal() {
+            sizeChartModal.classList.remove("show");
+        }
+        // Close the modal when clicking outside of it
+        function closeModalOnOutsideClick(event) {
+            const modalContent = document.querySelector(".modal-content");
+            if (!modalContent.contains(event.target)) {
+                closeModal();
+            }
+        }
+        // Get user UID and ID Token
+        function getUserCredentials() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                return user.getIdToken().then(idToken => {
+                    return { uid: user.uid, idToken };
+                });
+            } else {
+                return Promise.reject("No user is signed in.");
+            }
+        }
+        // Post the size chart URL and name to Firebase
+        function postSizeChartToFirebase(uid, idToken, url, chartName) {
+            const firebaseUrl = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/sizecharts.json?auth=${idToken}`;
+
+            const data = {
+                sizeChartUrl: url,
+                chartName: chartName, // Save the chart name
+                timestamp: new Date().toISOString(),
+            };
+
+            return fetch(firebaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+
+                    } else {
+                        throw new Error("Failed to save to Firebase");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error posting size chart to Firebase:", error);
+                });
+        }
+        // Handle file upload
+        sizeChartForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const file = sizeChartFileInput.files[0];
+            const chartName = chartNameInput.value.trim(); // Get chart name from input
+
+            if (!file) {
+                Swal.fire("Error", "Please select a file to upload", "error");
+                return;
+            }
+
+            if (!chartName) {
+                Swal.fire("Error", "Please enter a name for the size chart", "error");
+                return;
+            }
+
+            // Show spinner during upload
+            const spinner = document.getElementById("sub-spin");
+            const text = document.getElementById("sub-txt");
+            spinner.classList.remove("hidden");
+            text.style.display = "none";
+
+            try {
+                const result = await uploadToCloudinary(file, uploadPreset, cloudName); // Replace with `imgurUpload` if needed
+
+                if (result.success) {
+                    // Append the new size chart directly into #sizecharts
+                    document.getElementById("sizecharts").innerHTML += `
+        <div class="card2 mb-20 padding-15 chart-cards center">
+            <button class="show-chart-img-btn op-50" title="Show chart image" onclick="cantdonethis()"><i class="bi bi-eye-fill"></i></button>
+            <h3 class="flex align-items gap-30" style="justify-content: center;">
+                <span>${chartName}</span>
+                <button class="del-chart-btn op-50" title="Delete chart" onclick="cantdonethis()"><i class="bi bi-dash-circle"></i></button>
+            </h3>
+        </div>
+    `;
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "success",
+                        title: "Chart added successfully!",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    }).then(async () => {
+                        const { uid, idToken } = await getUserCredentials();
+                        await postSizeChartToFirebase(uid, idToken, result.data.link, chartName);
+                    });
+                } else {
+                    Swal.fire("Error", result.data.error, "error");
+                }
+
+            } catch (error) {
+                console.error("Upload failed:", error);
+                Swal.fire("Error", "Failed to upload size chart", "error");
+            } finally {
+                spinner.classList.add("hidden");
+                text.style.display = "block";
+                closeModal();
+            }
+        });
+        // Handle drag over event
+        function handleDragOver(event, dropZone) {
+            event.preventDefault();
+            dropZone.classList.add("drag-over");
+        }
+        // Handle drag leave event
+        function handleDragLeave(event, dropZone) {
+            dropZone.classList.remove("drag-over");
+        }
+        // Handle drop event
+        function handleDrop(event, dropZone) {
+            event.preventDefault();
+            dropZone.classList.remove("drag-over");
+
+            const fileInput = dropZone.querySelector("input[type='file']");
+            const files = event.dataTransfer.files;
+
+            if (files.length > 0) {
+                fileInput.files = files; // Assign dropped files to input
+                showPreview(dropZone, files[0]); // Show preview of the first file
+            }
+        }
+        // Show file preview and hide placeholder
+        function showPreview(dropZone, file) {
+            const previewContainer = dropZone.querySelector(".preview-container");
+            const placeholder = dropZone.querySelector(".flex.flex-column");
+
+            // Clear any existing preview
+            previewContainer.innerHTML = "";
+
+            // Hide the placeholder if it exists
+            if (placeholder) {
+                placeholder.style.display = "none";
+            }
+
+            // Add image preview
+            const preview = document.createElement("img");
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+                preview.style.maxWidth = "100%";
+                preview.style.maxHeight = "150px";
+                previewContainer.appendChild(preview);
+            };
+
+            // Remove border and enable button
+            dropZone.style.border = "none";
+            uploadButton.disabled = false;
+            uploadButton.classList.remove("hidden");
+
+            // Read the file as a Data URL
+            reader.readAsDataURL(file);
+
+            // Display the chart name input
+            chartNameInput.classList.remove("hidden");
+        }
+        // Allow file selection via click
+        document.querySelectorAll(".drop-zone").forEach((dropZone) => {
+            const fileInput = dropZone.querySelector("input[type='file']");
+            const previewContainer = document.createElement("div");
+            previewContainer.classList.add("preview-container");
+            dropZone.appendChild(previewContainer);
+
+            dropZone.addEventListener("click", () => fileInput.click());
+
+            fileInput.addEventListener("change", (event) => {
+                if (fileInput.files.length > 0) {
+                    showPreview(dropZone, fileInput.files[0]);
+                }
+            });
+        });
+        async function renderSizeCharts(uid) {
+            const sizeChartsContainer = document.getElementById("sizecharts");
+            const noSizeChartsContainer = document.getElementById("nosizecharts");
+            // Show preloader
+            preloader.classList.remove("hidden");
+
+            const firebaseUrl = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/sizecharts.json`;
+
+            try {
+                const response = await fetch(firebaseUrl);
+                const sizeChartsData = await response.json();
+
+                // Check if there are size charts
+                if (sizeChartsData && Object.keys(sizeChartsData).length > 0) {
+                    // Hide the "no size charts" message
+                    noSizeChartsContainer.classList.add("hidden");
+
+                    // Show the size charts container
+                    sizeChartsContainer.classList.remove("hidden");
+
+                    // Clear any existing size charts
+                    sizeChartsContainer.innerHTML = '';
+
+                    // Render each size chart
+                    for (const key in sizeChartsData) {
+                        const chart = sizeChartsData[key];
+                        const sizeChartElement = createSizeChartElement(chart, key, uid);
+                        sizeChartsContainer.appendChild(sizeChartElement);
+                    }
+                } else {
+                    // If no size charts are found, show the "no size charts" message
+                    noSizeChartsContainer.classList.remove("hidden");
+                    sizeChartsContainer.classList.add("hidden");
+                }
+            } catch (error) {
+                console.error("Error fetching size charts:", error);
+            }
+            finally {
+                // Ensure preloader is hidden if an error occurs
+                preloader.classList.add("hidden");
+            }
+        }
+        // Function to create an element for each size chart
+        function createSizeChartElement(chart, key, uid) {
+            const card = document.createElement("div");
+            card.classList.add("card2", "mb-20", "padding-15", "chart-cards", "center");
+
+            const showchartButton = document.createElement("button");
+            showchartButton.classList.add("show-chart-img-btn");
+            showchartButton.setAttribute("onclick", `showchart('${chart.sizeChartUrl}', '${uid}')`);
+            showchartButton.setAttribute("title", "Show chart image");
+            showchartButton.innerHTML = '<i class="bi bi-eye-fill"></i>';
+
+            const cardHeader = document.createElement("h3");
+            cardHeader.classList.add("flex", "align-items", "gap-30");
+            cardHeader.style.justifyContent = "space-between";
+
+            const title = document.createElement("span");
+            title.style.margin = "0 auto";
+            title.style.left = "-50%";
+            title.textContent = chart.chartName;
+
+            const delButton = document.createElement("button");
+            delButton.classList.add("del-chart-btn");
+            delButton.setAttribute("title", "Delete chart");
+            delButton.innerHTML = '<i class="bi bi-dash-circle"></i>';
+            delButton.onclick = function () {
+                deleteChart(key, uid, this); // Pass 'this' to identify the clicked button
+            };
+
+            cardHeader.appendChild(title);
+            cardHeader.appendChild(delButton);
+
+            card.appendChild(showchartButton);
+            card.appendChild(cardHeader);
+
+            return card;
+        }
+        // Function to delete a chart
+        async function deleteChart(chartKey, uid, button) {
+            const user = await getUserCredentials(); // Fetch the ID token dynamically
+
+            if (!user || !user.idToken) {
+                console.error("Failed to retrieve user credentials.");
+                return;
+            }
+
+            const result = await Swal.fire({
+                toast: true,
+                position: "top-end", // Show in the top-right
+                icon: "warning",
+                title: "Are you sure?",
+                text: "This pixel will be permanently deleted!",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+            });
+
+            if (result.isConfirmed) {
+                const firebaseUrl = `https://matager-f1f00-default-rtdb.firebaseio.com/Stores/${uid}/sizecharts/${chartKey}.json?auth=${user.idToken}`;
+                try {
+                    const response = await fetch(firebaseUrl, { method: "DELETE" });
+                    if (response.ok) {
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: "Size chart deleted successfully!",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                        // Remove the entire chart card div from the DOM
+                        button.closest(".chart-cards").remove();
+                        // Re-render the size charts after deletion
+                        // await renderSizeCharts(uid);
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "error",
+                            title: "Failed to delete the chart. Please try again.",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+
+                        console.error("Failed to delete the chart.");
+                    }
+                }
+                catch (error) {
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "error",
+                        title: "An error occurred while deleting the chart.",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+
+                    console.error("Error deleting chart:", error);
+                }
+
+            }
+        }
+        //
+        function showchart(url, uid) {
+            const modal = document.getElementById("imageModal");
+            const chartImage = document.getElementById("chartImage");
+
+            // Set the image URL in the modal
+            chartImage.src = url;
+
+            // Show the modal
+            modal.classList.add("show");
+        }
+
+        // Close the modal when the close button is clicked
+        document.getElementById("closeModal").onclick = function () {
+            document.getElementById("imageModal").classList.remove("show");
+        }
+
+        // Optional: Close the modal if the user clicks anywhere outside the modal content
+        window.onclick = function (event) {
+            if (event.target == document.getElementById("imageModal")) {
+                document.getElementById("imageModal").classList.remove("show");
+            }
+        }
+        // Function to render the size charts when the page loads
+        window.addEventListener("load", async () => {
+            try {
+                // Get the UID of the currently authenticated user
+                renderSizeCharts(uid);
+            } catch (error) {
+                console.error("Error getting user UID:", error);
+            }
+        });
+
+    </script>
+
+
+
+    <script src="./js/imageupload.js"></script>
+</body>
+
+</html>
