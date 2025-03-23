@@ -2246,7 +2246,9 @@ select {
 } */
 
 .Add-to-Cart,
-.close-btn {
+.close-btn,
+.Buyitnow,
+.placeorderbtn {
   /* border: 2px solid; */
   margin: 2px;
   padding: 7px;
@@ -2255,10 +2257,17 @@ select {
   transition: color 0.3s ease, background-color 0.3s ease;
 }
 
-.Add-to-Cart {
+.Add-to-Cart,
+.Buyitnow,
+.placeorderbtn {
+  padding: 10px;
   font-size: small;
   border-radius: 5px;
   width: fit-content;
+}
+
+.Buyitnow {
+  cursor: pointer;
 }
 
 .show-all-btn {
@@ -2266,7 +2275,9 @@ select {
 }
 
 .Add-to-Cart:hover,
-.close-btn:hover {
+.close-btn:hover,
+.Buyitnow:hover,
+.placeorderbtn:hover {
   background-color: #f0f0f0;
   color: black;
 }
@@ -5436,4 +5447,29 @@ th {
 .product-row.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.BuyItNowForm {
+  overflow: scroll;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  top: 0;
+  /* position: absolute; */
+  flex-direction: column;
+  gap: 10px;
+  padding: 38px;
+  border: 1px solid rgb(204, 204, 204);
+  background-color: rgb(249, 249, 249);
+  display: flex;
+  align-items: center;
+}
+
+.BuyItNowForm input {
+  color: #333;
+  font: inherit;
+  max-width: 375px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
